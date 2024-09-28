@@ -1,0 +1,7 @@
+{
+  "name": "sportApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
