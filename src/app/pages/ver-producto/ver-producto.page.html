@@ -1,0 +1,59 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ producto?.nombre }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content class="ion-padding">
+  <ion-spinner *ngIf="isLoading" name="dots" class="loading-spinner"></ion-spinner>
+  <div *ngIf="!isLoading" class="content-container">
+    <div id="lightbox" class="lightbox">
+      <ion-icon name="close-circle" class="close-icon" (click)="closeLightbox()"></ion-icon>
+      <div class="lightbox-content">
+        <img id="lightbox-image" class="zoomable-image">
+      </div>
+    </div>
+
+    <div class="gallery-container">
+      <div class="main-image-slider" (touchstart)="onTouchStart($event)" (touchend)="onTouchEnd($event)">
+        <img [src]="selectedImage" alt="Imagen del producto" (click)="openLightbox(selectedImage)">
+        <div class="image-counter">{{ currentIndex + 1 }}/{{ galleryImages.length }}</div>
+      </div>
+    </div>
+
+    <ion-card>
+      <ion-card-content>
+        <h2>{{ producto?.nombre }}</h2>
+        <p>{{ producto?.descripcion }}</p>
+        <p><strong>Precio:</strong> {{ producto?.precioFinal | currency:'USD':'symbol':'1.0-0' }}</p>
+        <p><strong>Existencias:</strong> {{ producto?.existencias }}</p>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
+
+<ion-footer *ngIf="!isLoading" class="footer-container">
+  <div *ngIf="productoEnCarrito" class="cart-actions-container">
+    <div class="quantity-controls">
+      <ion-icon name="remove" class="quantity-icon" (click)="disminuirCantidad()"></ion-icon>
+      <input type="number" [value]="cantidad" [min]="1" [max]="producto?.existencias" readonly class="quantity-input">
+      <ion-icon name="add" class="quantity-icon" (click)="aumentarCantidad()"></ion-icon>
+    </div>
+    <ion-button expand="block" shape="round" class="go-to-cart-button" (click)="irAlCarrito()">
+      Ir al carrito
+    </ion-button>
+  </div>
+  
+  
+  <div *ngIf="!productoEnCarrito">
+    <ion-button expand="full" shape="round" class="add-to-cart-button" (click)="agregarAlCarrito()">
+      Añadir al carrito
+    </ion-button>
+  </div>
+</ion-footer>

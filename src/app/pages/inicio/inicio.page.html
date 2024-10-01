@@ -1,0 +1,16 @@
+
+<app-header></app-header>
+<ion-content class="ion-padding">
+  <div *ngIf="sesionActiva; else noSessionTemplate">
+    <h2>Bienvenido, {{ nombreUsuario }}!</h2>
+    <p>Gracias por iniciar sesión. Aquí puedes acceder a funciones adicionales.</p>
+  </div>
+
+  <ng-template #noSessionTemplate>
+    <h2>Bienvenido a SportApp!</h2>
+    <p>No has iniciado sesión. Por favor, inicia sesión para disfrutar de más funciones.</p>
+  </ng-template>
+
+<ion-tabs></ion-tabs>
+
+</ion-content>

@@ -34,4 +34,180 @@
 
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
+// @import '@ionic/angular/css/palettes/dark.system.css';
+
+.link-container {
+  margin-top: 16px;
+
+  a {
+    display: block;
+    margin-top: 8px;
+    color: var(--ion-color-primary);
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+}
+
+.header-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.user-avatar {
+  margin: 0px auto 20px auto;
+  width: 100px;
+  height: 100px;
+  display: block;
+}
+
+.product-card {
+  height: 200px; // Limita la altura de todos los cards
+  display: flex;
+  flex-direction: column;
+  // justify-content: space-between;
+  overflow: hidden;
+}
+
+.product-image {
+  max-width: 100%;  // Asegura que la imagen no exceda el ancho del car
+  max-height: 70px; // Limitar la altura de la imagen
+  object-fit: cover; // Asegura que la imagen se ajuste bien sin distorsionarse
+  width: auto;
+  height: auto;
+  margin: 10px auto 0px;  // Centrar la imagen horizontalmente
+  display: block;
+}
+
+.product-title {
+  font-size: 0.9rem; // Ajustar el tamaño de la fuente según lo necesites
+  overflow: hidden; // Ocultar texto excedente si es necesario
+  text-align: center; // Centrar el texto horizontalmente
+  display: block; // Asegurar que el elemento se comporte como un bloque para mejor alineación
+  height: 50px;
+}
+.product-price {
+  font-size: 1.2rem; // Ajustar el tamaño del precio según lo necesites
+  font-weight: bold !important; // Hacer el precio en negrita
+  text-align: center; // Centrar el precio horizontalmente
+  margin-top: auto;
+  margin-top: 10px; // Añadir un pequeño margen superior para espacio visual
+}
+
+.loading-spinner {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10; // Asegura que esté encima del resto del contenido
+}
+
+.gallery-container {
+  display: flex;
+  align-items: flex-start;
+}
+
+.main-image {
+  flex: 3;
+  padding: 10px;
+}
+
+.main-image img {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.thumbnail-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+}
+
+.thumbnail-container img {
+  width: 100%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  transition: border-color 0.3s;
+}
+
+.thumbnail-container img.active {
+  border-color: #3880ff; /* Color del borde activo */
+}
+
+
+.lightbox {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-content {
+  overflow: hidden; /* Evitar que la imagen se desborde al hacer zoom */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  margin: 20px; /* Añadir margen para separar la imagen del borde */
+  box-sizing: border-box; /* Asegura que el margen no afecte el tamaño total */
+}
+
+.zoomable-image {
+  max-width: 100%;
+  max-height: 100%;
+  transition: transform 0.25s ease; /* Suaviza el zoom */
+  cursor: zoom-in; /* Cambia el cursor para indicar zoom */
+}
+
+
+.close-icon {
+  position: absolute;
+  top: 80px;
+  right: 18px;
+  font-size: 40px;
+  color: #3880ff;
+  cursor: pointer;
+  z-index: 1100;
+}
+
+.main-image-slider {
+  height: 300px; /* Altura constante */
+  width: 100%; /* Ajusta según tus necesidades */
+  max-width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.main-image-slider img {
+  height: 100%;
+  width: auto;
+  transition: transform 1s ease-in-out; /* Duración de la transición */
+}
+
+.image-counter {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+}

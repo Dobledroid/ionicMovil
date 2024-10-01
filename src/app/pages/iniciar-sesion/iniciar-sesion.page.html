@@ -1,0 +1,49 @@
+<ion-content>
+  <img src="assets/header.png" alt="Header Image" class="header-image">
+
+  <div class="ion-padding">
+    <form #loginForm="ngForm" (ngSubmit)="onSubmit()">
+      <ion-list>
+        <ion-item>
+          <ion-input labelPlacement="stacked" label="Correo Electrónico" placeholder="email@domain.com" type="email"
+            required email [(ngModel)]="email" name="email" #emailInput="ngModel"
+            [ngClass]="{ 'invalid-input': emailInput.invalid && (emailInput.touched || loginForm.submitted) }">
+            <ion-icon slot="start" name="mail" aria-hidden="true"></ion-icon>
+          </ion-input>
+        </ion-item>
+        <ion-text color="danger" *ngIf="emailInput.invalid && (emailInput.touched || loginForm.submitted)">
+          <ng-container *ngIf="emailInput.errors?.['required']">El correo electrónico es obligatorio.</ng-container>
+          <ng-container *ngIf="emailInput.errors?.['email']">Ingrese un correo electrónico válido.</ng-container>
+        </ion-text>
+
+        <ion-item>
+          <ion-input labelPlacement="stacked" label="Contraseña" placeholder="Ingrese su contraseña"
+            [type]="passwordType" required minlength="6" [(ngModel)]="password" name="password" #passwordInput="ngModel"
+            [ngClass]="{ 'invalid-input': passwordInput.invalid && (passwordInput.touched || loginForm.submitted) }">
+            <ion-icon slot="start" name="lock-closed" aria-hidden="true"></ion-icon>
+            <ion-button fill="clear" slot="end" aria-label="Mostrar/Ocultar" (click)="togglePasswordVisibility()">
+              <ion-icon slot="icon-only" [name]="passwordIcon" [color]="passwordIconColor"
+                aria-hidden="true"></ion-icon>
+            </ion-button>
+          </ion-input>
+        </ion-item>
+        <ion-text color="danger" *ngIf="passwordInput.invalid && (passwordInput.touched || loginForm.submitted)">
+          <ng-container *ngIf="passwordInput.errors?.['required']">La contraseña es obligatoria.</ng-container>
+          <ng-container *ngIf="passwordInput.errors?.['minlength']">La contraseña debe tener al menos 6
+            caracteres.</ng-container>
+        </ion-text>
+      </ion-list>
+      <ion-button expand="block" type="submit" color="dark" [disabled]="loginForm.invalid">Iniciar Sesión</ion-button>
+    </form>
+
+    <div class="link-container ion-text-center">
+      <ion-text>
+        <a routerLink='/recuperar-contrasena'>¿Olvidó su contraseña?</a>
+      </ion-text>
+      <ion-text>
+        <a routerLink="/registro">Registrar una nueva cuenta</a>
+      </ion-text>
+    </div>
+  </div>
+
+</ion-content>

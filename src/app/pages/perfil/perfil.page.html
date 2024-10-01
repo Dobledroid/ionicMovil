@@ -1,0 +1,35 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Perfil</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-grid>
+    <ion-row class="ion-justify-content-center ion-align-items-center">
+      <ion-col size="auto" class="ion-text-center">
+        <ion-avatar class="user-avatar">
+          <img src="assets/img/avatar.jpg" alt="User Avatar">
+        </ion-avatar>
+        <h2>{{ nombreUsuario }}</h2>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-list>
+    <ion-item button (click)="goToMisCompras()">
+      <ion-icon slot="start" name="cash-outline"></ion-icon>
+      <ion-label>Mis Compras</ion-label>
+    </ion-item>
+
+    <ion-item button (click)="goToMisDirecciones()">
+      <ion-icon slot="start" name="location-outline"></ion-icon>
+      <ion-label>Mis Direcciones</ion-label>
+    </ion-item>
+
+    <ion-item button color="danger" (click)="cerrarSesion()">
+      <ion-icon slot="start" name="log-out-outline"></ion-icon>
+      <ion-label>Cerrar Sesión</ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

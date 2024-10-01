@@ -1,0 +1,56 @@
+ion-thumbnail {
+    img {
+      max-height: 100px;
+      width: auto;
+      object-fit: cover;
+    }
+  }
+  
+  ion-label {
+    h2 {
+      font-size: 1rem;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    
+    .price-quantity-container {
+      display: flex;
+      justify-content: space-between; /* Asegura que el precio esté a la izquierda y la cantidad a la derecha */
+      align-items: center;
+      margin-top: 8px;
+    }
+  
+    .product-price {
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #333;
+    }
+  
+  }
+  
+  ion-item {
+    --min-height: 120px;
+  }
+  
+  .quantity-controls {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc; /* Añadir borde a los controles */
+    border-radius: 5px; /* Opcional, para bordes redondeados */
+    padding: 5px; /* Espacio interno para que el borde no quede pegado */
+  }
+  
+  .quantity-icon {
+    font-size: 1rem; /* Reducir el tamaño del icono */
+    cursor: pointer;
+    color: black; /* Asegurarse de que el color sea negro */
+  }
+  
+  .quantity-input {
+    width: 40px; /* Reducir el ancho del input */
+    text-align: center;
+    border: none;
+    background-color: #f5f5f5;
+  }
+  
