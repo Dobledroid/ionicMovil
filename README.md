@@ -29,17 +29,6 @@ El proyecto utiliza **Git** como herramienta de control de versiones, hospedado 
 
 ---
 
-## Estrategia de Versionamiento
-
-Se utiliza la estrategia de **versionamiento semántico**, la cual sigue el formato `X.Y.Z`, donde:
-- `X`: Versión mayor, para cambios incompatibles.
-- `Y`: Versión menor, para nuevas funcionalidades sin romper compatibilidad.
-- `Z`: Parche, para correcciones de errores.
-
-Los cambios se documentan con precisión en el historial de commits, asegurando la trazabilidad y permitiendo revertir a versiones anteriores si es necesario.
-
----
-
 ## Estrategia de Despliegue
 
 El proceso de despliegue sigue un flujo automatizado mediante **CI/CD (Integración Continua y Despliegue Continuo)**, con tres entornos principales:
