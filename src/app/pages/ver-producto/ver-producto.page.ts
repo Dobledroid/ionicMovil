@@ -1,24 +1,52 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  CUSTOM_ELEMENTS_SCHEMA,
+  OnInit,
+  AfterViewInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { IonicModule, NavController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { arrowBack, arrowForward, closeCircle, arrowBackOutline, remove, add }  from 'ionicons/icons';
+import {
+  arrowBack,
+  arrowForward,
+  closeCircle,
+  arrowBackOutline,
+  remove,
+  add,
+  chevronDownOutline,
+  heart,
+  heartOutline,
+} from 'ionicons/icons';
+
+import * as moment from 'moment';
+import 'moment/locale/es';
 import { SessionService } from 'src/app/services/session.service';
+import { HeaderComponent } from 'src/app/components/header/header.component';
+import { ToastController } from '@ionic/angular';
 
 import { environment } from 'src/environments/environment';
+import { FormsModule } from '@angular/forms';
+import { StarRatingComponent } from 'src/app/components/star-rating/star-rating.component';
 
 @Component({
   selector: 'app-ver-producto',
   templateUrl: './ver-producto.page.html',
   styleUrls: ['./ver-producto.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule, HttpClientModule],
+  imports: [
+    CommonModule,
+    IonicModule,
+    HttpClientModule,
+    HeaderComponent,
+    FormsModule,
+    StarRatingComponent,
+  ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-
-export class VerProductoPage implements OnInit  {
+export class VerProductoPage implements OnInit {
   producto: any;
   usuario: any;
   galleryImages: any[] = [];
@@ -26,19 +54,50 @@ export class VerProductoPage implements OnInit  {
   currentIndex: number = 0;
   startX: number = 0;
   zoomLevel: number = 1;
-  isLoading: boolean = true; 
+  isLoading: boolean = true;
   idCarrito: number = 0;
+  productoId: string = '';
   productoEnCarrito: boolean = false;
   cantidad: number = 1;
-  
+  rutaAnterior: string = '';
+  previousUrl: string = '';
+  calificacion: number = 0;
+  selectedSegment: string = 'descripcion';
+  isTitleExpanded: boolean = false;
 
-  constructor(private route: ActivatedRoute, private http: HttpClient,
-    private navCtrl: NavController, private sessionService: SessionService,
+  resenas: any[] = [];
+  comentario: string = '';
+  isFavorite: boolean = false;
+  idFavorito: number | null = null;
+  sinStock: boolean = false;
+  constructor(
+    private route: ActivatedRoute,
+    private http: HttpClient,
+    private navCtrl: NavController,
+    private sessionService: SessionService,
+    private router: Router,
+    private toastController: ToastController
   ) {
-    addIcons({ arrowBack, arrowForward, closeCircle, arrowBackOutline, remove, add });
+    addIcons({
+      arrowBack,
+      arrowForward,
+      closeCircle,
+      arrowBackOutline,
+      remove,
+      add,
+      chevronDownOutline,
+      heart,
+      heartOutline,
+    });
   }
 
   async ngOnInit() {
+    this.route.queryParams.subscribe((params) => {
+      const fullPreviousUrl = params['previousUrl'] || '/inicio';
+      this.previousUrl = fullPreviousUrl.split('?')[0];
+      // console.log('Ruta previa:', this.previousUrl);
+    });
+
     const user = await this.sessionService.get('user');
     if (user) {
       this.usuario = user;
@@ -47,11 +106,40 @@ export class VerProductoPage implements OnInit  {
     const productId = this.route.snapshot.paramMap.get('id');
     if (productId) {
       this.getProductDetails(productId);
-      this.checkProductInCart(productId);
-    } else {
-      console.error('No se proporcionó un ID de producto válido.');
+      this.obtenerResenas(productId);
+      if (user) {
+        this.checkProductInCart(productId);
+        this.checkIfFavorite(user.ID_usuario, productId);
+      }
+    }
+  }
+
+  toggleTitle() {
+    this.isTitleExpanded = !this.isTitleExpanded;
+  }
+
+  onSegmentChange(event: any) {
+    this.selectedSegment = event.detail.value;
+  }
+
+  formatDescription(description: string): string {
+    if (!description) {
+      return '';
     }
 
+    // Reemplazar saltos de línea (\r\n) por <br> para que se muestren como saltos de línea
+    let formattedDescription = description.replace(/\r\n/g, '<br>');
+
+    // Reemplazar ciertos textos para agregar listas de viñetas
+    formattedDescription = formattedDescription.replace(/•/g, '<li>');
+
+    // Si tienes una lista de viñetas, envuélvelas en <ul></ul>
+    formattedDescription = formattedDescription.replace(
+      /(<li>.*?<\/li>)/g,
+      '<ul>$1</ul>'
+    );
+
+    return formattedDescription;
   }
 
   checkProductInCart(productId: string) {
@@ -67,7 +155,10 @@ export class VerProductoPage implements OnInit  {
               this.cantidad = carritoResponse.cantidad;
             },
             (error) => {
-              console.error('Error al obtener la cantidad del producto en el carrito:', error);
+              console.error(
+                'Error al obtener la cantidad del producto en el carrito:',
+                error
+              );
             }
           );
         } else {
@@ -76,12 +167,14 @@ export class VerProductoPage implements OnInit  {
         }
       },
       (error) => {
-        console.error('Error al verificar si el producto existe en el carrito:', error);
+        console.error(
+          'Error al verificar si el producto existe en el carrito:',
+          error
+        );
       }
     );
   }
 
-  
   getProductDetails(id: string) {
     this.isLoading = true;
     const apiUrl = `${environment.apiUrl}/products-with-imagensIonic/${id}`;
@@ -90,13 +183,21 @@ export class VerProductoPage implements OnInit  {
       (response) => {
         this.producto = response;
         // console.log('Detalles del producto:', this.producto);
-
+        if (this.producto && this.producto.descripcion) {
+          this.producto.descripcionFormateada = this.formatDescription(
+            this.producto.descripcion
+          );
+        }
+        this.productoId = this.producto.ID_producto;
         // Asignar las imágenes al arreglo de la galería
-        this.galleryImages = this.producto.imagenes.map((imagenUrl: string) => ({
-          src: imagenUrl,
-          alt: this.producto.nombre
-        }));
+        this.galleryImages = this.producto.imagenes.map(
+          (imagenUrl: string) => ({
+            src: imagenUrl,
+            alt: this.producto.nombre,
+          })
+        );
         this.selectedImage = this.galleryImages[0]?.src;
+        this.sinStock = this.producto.existencias <= 0;
         this.isLoading = false;
         // console.log('Imágenes del producto:', this.galleryImages);
       },
@@ -107,55 +208,170 @@ export class VerProductoPage implements OnInit  {
     );
   }
 
+  obtenerResenas(id: string) {
+    this.http
+      .get(`${environment.apiUrl}/resenas/${id}`)
+      .subscribe((response: any) => {
+        this.resenas = response;
+      });
+  }
+
+  async enviarResena() {
+    const user = await this.sessionService.get('user');
+
+    if (!user) {
+      // Mostrar mensaje de advertencia y redirigir según la respuesta del usuario
+      const toast = await this.toastController.create({
+        message: 'Por favor, inicia sesión para dejar una reseña.',
+        duration: 3000,
+        position: 'top',
+        buttons: [
+          {
+            text: 'Iniciar sesión',
+            handler: () => {
+              this.navCtrl.navigateForward('/iniciar-sesion'); // Redirigir a la página de inicio de sesión
+            },
+          },
+          {
+            text: 'Registrarse',
+            handler: () => {
+              this.navCtrl.navigateForward('/registrarse'); // Redirigir a la página de registro
+            },
+          },
+        ],
+      });
+      await toast.present();
+      return;
+    }
+
+    // Validar si el comentario tiene contenido
+    if (!this.comentario || this.comentario.trim() === '') {
+      const toast = await this.toastController.create({
+        message: 'Por favor, escribe un comentario antes de enviarlo.',
+        duration: 3000,
+        position: 'top',
+      });
+      await toast.present();
+      return;
+    }
+
+    // Validar si hay una calificación
+    if (this.calificacion === 0) {
+      const toast = await this.toastController.create({
+        message:
+          'Por favor, selecciona una calificación antes de enviar la reseña.',
+        duration: 3000,
+        position: 'top',
+      });
+      await toast.present();
+      return;
+    }
+
+    const nuevaResena = {
+      ID_usuario: user.ID_usuario,
+      ID_producto: this.producto.ID_producto,
+      comentario: this.comentario,
+      calificacion: this.calificacion,
+    };
+
+    try {
+      const response = await this.http
+        .post(`${environment.apiUrl}/resenas`, nuevaResena)
+        .toPromise();
+
+      if (response) {
+        const successToast = await this.toastController.create({
+          message: 'Reseña enviada con éxito',
+          duration: 3000,
+          position: 'top',
+          color: 'success',
+        });
+        await successToast.present();
+        // Resetear el comentario y la calificación
+        this.comentario = '';
+        this.calificacion = 0;
+        // Actualizar la lista de reseñas
+        console.log('id mandando', this.productoId);
+        this.obtenerResenas(this.productoId);
+      } else {
+        const errorToast = await this.toastController.create({
+          message: 'Hubo un error al enviar la reseña',
+          duration: 3000,
+          position: 'top',
+          color: 'danger',
+        });
+        await errorToast.present();
+      }
+    } catch (error) {
+      const networkErrorToast = await this.toastController.create({
+        message: 'Error de red al enviar la reseña',
+        duration: 3000,
+        position: 'top',
+        color: 'danger',
+      });
+      await networkErrorToast.present();
+    }
+  }
+
+  onRatingChange(newRating: number) {
+    this.calificacion = newRating;
+  }
+  formatearFecha(fecha: string): string {
+    return moment(fecha).locale('es').format('D MMM YYYY'); // Ejemplo: 2 oct 2024
+  }
   goBack() {
     this.navCtrl.back();
   }
 
   openLightbox(imageUrl: string) {
     const lightbox = document.getElementById('lightbox');
-    const lightboxImage = document.getElementById('lightbox-image') as HTMLImageElement;
-  
+    const lightboxImage = document.getElementById(
+      'lightbox-image'
+    ) as HTMLImageElement;
+
     if (lightbox && lightboxImage) {
       lightboxImage.src = imageUrl;
       lightbox.style.display = 'flex';
       this.zoomLevel = 1; // Resetear el nivel de zoom al abrir la imagen
       lightboxImage.style.transform = `scale(${this.zoomLevel})`;
-  
+
       // Añadir evento para el zoom con la rueda del ratón
       lightboxImage.addEventListener('wheel', this.handleZoom.bind(this));
     }
   }
-  
+
   closeLightbox() {
     const lightbox = document.getElementById('lightbox');
-    const lightboxImage = document.getElementById('lightbox-image') as HTMLImageElement;
-  
+    const lightboxImage = document.getElementById(
+      'lightbox-image'
+    ) as HTMLImageElement;
+
     if (lightbox) {
       lightbox.style.display = 'none';
-  
+
       // Remover el evento de zoom cuando se cierra el lightbox
       lightboxImage.removeEventListener('wheel', this.handleZoom.bind(this));
     }
   }
-  
+
   handleZoom(event: WheelEvent) {
     event.preventDefault();
-    const lightboxImage = document.getElementById('lightbox-image') as HTMLImageElement;
-  
+    const lightboxImage = document.getElementById(
+      'lightbox-image'
+    ) as HTMLImageElement;
+
     if (lightboxImage) {
       // Ajustar el nivel de zoom
       this.zoomLevel += event.deltaY * -0.001;
-  
+
       // Limitar el zoom mínimo y máximo
       this.zoomLevel = Math.min(Math.max(this.zoomLevel, 1), 3);
-  
+
       // Aplicar el zoom a la imagen
       lightboxImage.style.transform = `scale(${this.zoomLevel})`;
     }
   }
-  
-  
-  
+
   selectImage(imageUrl: string, index: number) {
     this.selectedImage = imageUrl;
     this.currentIndex = index;
@@ -195,7 +411,6 @@ export class VerProductoPage implements OnInit  {
     }
     this.selectedImage = this.galleryImages[this.currentIndex].src;
   }
-  
 
   async agregarAlCarrito() {
     // Obtener datos del usuario del storage
@@ -204,63 +419,131 @@ export class VerProductoPage implements OnInit  {
       this.navCtrl.navigateRoot('/iniciar-sesion');
       return;
     }
-  
+
     // Endpoint para validar si el producto ya está en el carrito
     const apiUrlExiste = `${environment.apiUrl}/carrito-compras-existe-prod/${this.usuario.ID_usuario}/${this.producto.ID_producto}`;
-  
+
     this.http.get<any>(apiUrlExiste).subscribe(
       (response) => {
-        if (response && response.length === 0) {
-          this.agregarProductoCarrito(this.usuario.ID_usuario, this.producto.ID_producto, 1);
+        console.log('response', response);
+        if (response && response.existeRegistro === false) {
+          // Si el producto no está en el carrito, agregarlo
+          this.agregarProductoCarrito(
+            this.usuario.ID_usuario,
+            this.producto.ID_producto,
+            this.cantidad
+          );
           this.productoEnCarrito = true;
+        } else if (response && response.existeRegistro === true) {
+          // Si el producto ya está en el carrito, actualizar la cantidad
+          this.actualizarCantidadProducto(
+            response.ID_carrito,
+            response.cantidad + this.cantidad
+          );
         }
       },
       (error) => {
-        console.error('Error al verificar si el producto existe en el carrito:', error);
+        console.error(
+          'Error al verificar si el producto existe en el carrito:',
+          error
+        );
       }
     );
   }
-  
+
   async actualizarCantidadProducto(ID_carrito: number, cantidad: number) {
     const apiUrl = `${environment.apiUrl}/carrito-compras/${ID_carrito}`;
     const body = { cantidad };
-  
+
     try {
       const response = await fetch(apiUrl, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
       });
-  
+
       if (response.ok) {
-        console.log('Cantidad del producto actualizada en el carrito:', await response.json());
-        // Mostrar una alerta indicando que el producto se ha actualizado
+        const successToast = await this.toastController.create({
+          message: 'Cantidad del producto actualizada con éxito.',
+          duration: 3000,
+          position: 'top',
+          color: 'success',
+        });
+        await successToast.present();
       } else {
-        console.error('Error al actualizar la cantidad del producto en el carrito:', response.statusText);
+        const errorToast = await this.toastController.create({
+          message:
+            'Hubo un error al actualizar la cantidad del producto en el carrito.',
+          duration: 3000,
+          position: 'top',
+          color: 'danger',
+        });
+        await errorToast.present();
       }
     } catch (error) {
-      console.error('Error al actualizar la cantidad del producto en el carrito:', error);
+      console.error(
+        'Error al actualizar la cantidad del producto en el carrito:',
+        error
+      );
+      const networkErrorToast = await this.toastController.create({
+        message:
+          'Error de red al actualizar la cantidad del producto en el carrito.',
+        duration: 3000,
+        position: 'top',
+        color: 'danger',
+      });
+      await networkErrorToast.present();
     }
   }
-  
-  agregarProductoCarrito(ID_usuario: number, ID_producto: number, cantidad: number) {
+
+  agregarProductoCarrito(
+    ID_usuario: number,
+    ID_producto: number,
+    cantidad: number
+  ) {
+    console.log(ID_usuario, ID_producto, cantidad);
     const apiUrl = `${environment.apiUrl}/carrito-compras`;
     const body = {
       ID_usuario: ID_usuario,
       ID_producto: ID_producto,
-      cantidad: cantidad
+      cantidad: cantidad,
     };
-  
+
     this.http.post(apiUrl, body).subscribe(
-      (response) => {
-        console.log('Producto agregado al carrito:', response);
+      async (response) => {
+        const successToast = await this.toastController.create({
+          message: 'Producto agregado al carrito con éxito.',
+          duration: 3000,
+          position: 'top',
+          color: 'success',
+        });
+        await successToast.present();
       },
-      (error) => {
+      async (error) => {
         console.error('Error al agregar el producto al carrito:', error);
+        const errorToast = await this.toastController.create({
+          message: 'Hubo un error al agregar el producto al carrito.',
+          duration: 3000,
+          position: 'top',
+          color: 'danger',
+        });
+        await errorToast.present();
       }
     );
+  }
+
+  disminuirCantidadPr() {
+    if (this.cantidad > 1) {
+      this.cantidad--;
+    }
+  }
+
+  aumentarCantidadPr() {
+    if (this.cantidad < this.producto?.existencias) {
+      this.cantidad++;
+    }
   }
 
   aumentarCantidad() {
@@ -269,7 +552,7 @@ export class VerProductoPage implements OnInit  {
       this.actualizarCantidadProducto(this.idCarrito, this.cantidad);
     }
   }
-  
+
   disminuirCantidad() {
     if (this.cantidad > 1) {
       this.cantidad--;
@@ -279,6 +562,94 @@ export class VerProductoPage implements OnInit  {
   irAlCarrito() {
     this.navCtrl.navigateForward('/carrito');
   }
-  
 
+  async checkIfFavorite(userId: number, productId: string) {
+    try {
+      const response = await fetch(
+        `${environment.apiUrl}/favoritos/${userId}/${productId}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        this.idFavorito = data.ID_favorito;
+        this.isFavorite = data.isFavorito;
+      }
+    } catch (error) {
+      console.error('Error de red:', error);
+    }
+  }
+
+  async toggleFavorite() {
+    if (!this.usuario) {
+      const toast = await this.toastController.create({
+        message:
+          'Por favor, inicia sesión para agregar productos a tus favoritos.',
+        duration: 3000,
+        position: 'top',
+        buttons: [
+          {
+            text: 'Iniciar sesión',
+            handler: () => {
+              this.navCtrl.navigateForward('/iniciar-sesion');
+            },
+          },
+        ],
+      });
+      await toast.present();
+      return;
+    }
+
+    try {
+      if (this.isFavorite) {
+        // Eliminar de favoritos
+        const deleteResponse = await fetch(
+          `${environment.apiUrl}/favorito/${this.idFavorito}`,
+          {
+            method: 'DELETE',
+          }
+        );
+
+        if (deleteResponse.ok) {
+          this.isFavorite = false;
+          const toast = await this.toastController.create({
+            message: 'Producto eliminado de favoritos',
+            duration: 3000,
+            position: 'top',
+            color: 'danger',
+          });
+          await toast.present();
+        } else {
+          console.error('Error al eliminar el producto de favoritos');
+        }
+      } else {
+        // Agregar a favoritos
+        const addResponse = await fetch(`${environment.apiUrl}/favoritos`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ID_usuario: this.usuario.ID_usuario,
+            ID_producto: parseInt(this.productoId, 10),
+          }),
+        });
+
+        if (addResponse.ok) {
+          const data = await addResponse.json();
+          this.idFavorito = data.ID_favorito;
+          this.isFavorite = true;
+          const toast = await this.toastController.create({
+            message: 'Producto agregado a favoritos',
+            duration: 3000,
+            position: 'top',
+            color: 'success',
+          });
+          await toast.present();
+        } else {
+          console.error('Error al agregar el producto a favoritos');
+        }
+      }
+    } catch (error) {
+      console.error('Error de red:', error);
+    }
+  }
 }

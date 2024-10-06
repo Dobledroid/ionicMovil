@@ -1,0 +1,39 @@
+
+.product-card {
+  height: 200px; // Limita la altura de todos los cards
+  display: flex;
+  flex-direction: column;
+  // justify-content: space-between;
+  overflow: hidden;
+}
+
+.product-image {
+  max-width: 100%;  // Asegura que la imagen no exceda el ancho del car
+  max-height: 70px; // Limitar la altura de la imagen
+  object-fit: cover; // Asegura que la imagen se ajuste bien sin distorsionarse
+  width: auto;
+  height: auto;
+  margin: 10px auto 0px;  // Centrar la imagen horizontalmente
+  display: block;
+}
+
+.product-title {
+  font-size: 0.9rem; // Ajustar el tamaño de la fuente según lo necesites
+  overflow: hidden; // Ocultar texto excedente si es necesario
+  text-align: center; // Centrar el texto horizontalmente
+  display: block; // Asegurar que el elemento se comporte como un bloque para mejor alineación
+  height: 50px;
+}
+.product-price {
+  font-weight: bold !important; // Hacer el precio en negrita
+  text-align: center; // Centrar el precio horizontalmente
+}
+
+.rounded-searchbar {
+    --border-radius: 20px;  // Ajusta el valor según el grado de redondeo deseado
+    --background: #fff;  // Fondo blanco
+    margin-bottom: 15px; // Añadir margen inferior
+  }
+  
+
+  

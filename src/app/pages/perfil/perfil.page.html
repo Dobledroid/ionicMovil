@@ -1,35 +1,56 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>Perfil</ion-title>
+  <ion-toolbar style="--background: #F2CB05;">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/cuenta"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="nunito-font">Información del Usuario</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <ion-grid>
-    <ion-row class="ion-justify-content-center ion-align-items-center">
-      <ion-col size="auto" class="ion-text-center">
-        <ion-avatar class="user-avatar">
-          <img src="assets/img/avatar.jpg" alt="User Avatar">
-        </ion-avatar>
-        <h2>{{ nombreUsuario }}</h2>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Información del Usuario</ion-title>
+    </ion-toolbar>
+  </ion-header>
 
-  <ion-list>
-    <ion-item button (click)="goToMisCompras()">
-      <ion-icon slot="start" name="cash-outline"></ion-icon>
-      <ion-label>Mis Compras</ion-label>
+  <ion-spinner *ngIf="isLoading" name="dots" class="loading-spinner"></ion-spinner>
+
+  <form *ngIf="!isLoading" [formGroup]="userForm">
+    <ion-item>
+      <ion-label position="floating">Nombre</ion-label>
+      <ion-input formControlName="nombre" type="text"></ion-input>
     </ion-item>
 
-    <ion-item button (click)="goToMisDirecciones()">
-      <ion-icon slot="start" name="location-outline"></ion-icon>
-      <ion-label>Mis Direcciones</ion-label>
+    <ion-item>
+      <ion-label position="floating">Primer Apellido</ion-label>
+      <ion-input formControlName="primerApellido" type="text"></ion-input>
     </ion-item>
 
-    <ion-item button color="danger" (click)="cerrarSesion()">
-      <ion-icon slot="start" name="log-out-outline"></ion-icon>
-      <ion-label>Cerrar Sesión</ion-label>
+    <ion-item>
+      <ion-label position="floating">Segundo Apellido</ion-label>
+      <ion-input formControlName="segundoApellido" type="text"></ion-input>
     </ion-item>
-  </ion-list>
+
+    <ion-item>
+      <ion-label position="floating">Teléfono</ion-label>
+      <ion-input formControlName="telefono" type="tel"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Género</ion-label>
+      <ion-select formControlName="genero">
+        <ion-select-option value="Masculino">Masculino</ion-select-option>
+        <ion-select-option value="Femenino">Femenino</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+  </form>
 </ion-content>
+<ion-footer  *ngIf="!isLoading">
+  <ion-toolbar>
+    <ion-button expand="full" color="dark" (click)="guardarInformacion()">
+      Guardar
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

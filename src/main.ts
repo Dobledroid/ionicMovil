@@ -22,6 +22,7 @@ import { Capacitor } from '@capacitor/core';
 import { Stripe } from '@capacitor-community/stripe';
 import { environment } from './environments/environment';
 
+
 if (Capacitor.isNativePlatform()) {
   Stripe.initialize({
     publishableKey: environment.stripe.publishableKey,

@@ -1,14 +1,4 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button (click)="goBack()">
-        <ion-icon name="arrow-back-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-    <ion-title>{{ producto?.nombre }}</ion-title>
-  </ion-toolbar>
-</ion-header>
-
+<app-header [pageTitle]="''" [showBackButton]="true" [backButtonHref]="previousUrl"></app-header>
 
 <ion-content class="ion-padding">
   <ion-spinner *ngIf="isLoading" name="dots" class="loading-spinner"></ion-spinner>
@@ -27,33 +17,128 @@
       </div>
     </div>
 
-    <ion-card>
-      <ion-card-content>
-        <h2>{{ producto?.nombre }}</h2>
-        <p>{{ producto?.descripcion }}</p>
-        <p><strong>Precio:</strong> {{ producto?.precioFinal | currency:'USD':'symbol':'1.0-0' }}</p>
-        <p><strong>Existencias:</strong> {{ producto?.existencias }}</p>
-      </ion-card-content>
-    </ion-card>
+    <!-- Sección del nombre del producto, precio y contenedor -->
+    <div class="product-info-container">
+      <div class="title-container">
+        <h6 class="product-title">{{ isTitleExpanded ? producto?.nombre : (producto?.nombre | slice:0:50) + '...' }}
+        </h6>
+        <ion-icon name="chevron-down-outline" class="toggle-button" (click)="toggleTitle()"
+          [ngClass]="{ 'expanded': isTitleExpanded }">
+        </ion-icon>
+      </div>
+      <p class="product-price">
+        {{ producto?.precioFinal | currency:'MXN':'symbol':'1.2-2' }}
+      </p>
+      <div *ngIf="sinStock" class="out-of-stock-message">
+        <p>Producto fuera de stock</p>
+      </div>
+      <div  *ngIf="!sinStock" class="bordered-container-pr">
+        <ion-label class="quantity-label-pr">Cantidad:</ion-label>
+        <div class="quantity-controls-pr">
+          <ion-icon name="remove" class="quantity-icon-pr" (click)="disminuirCantidadPr()"></ion-icon>
+          <input type="number" [value]="cantidad" [min]="1" [max]="producto?.existencias" readonly
+            class="quantity-input-pr">
+          <ion-icon name="add" class="quantity-icon-pr" (click)="aumentarCantidadPr()"></ion-icon>
+        </div>
+        <ion-icon 
+        [name]="isFavorite ? 'heart' : 'heart-outline'" 
+        class="favorite-icon-pr" 
+        (click)="toggleFavorite()"
+        [ngClass]="{ 'favorite-active': isFavorite }">
+      </ion-icon>
+      </div>
+    </div>
+
+
+    <ion-segment [(ngModel)]="selectedSegment" (ionChange)="onSegmentChange($event)">
+      <ion-segment-button value="descripcion">
+        <ion-label>Descripción</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="resenas">
+        <ion-label>Reseñas</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
+    <div [ngSwitch]="selectedSegment">
+      <div *ngSwitchCase="'descripcion'">
+        <ion-card>
+          <ion-card-content>
+            <p [innerHTML]="producto?.descripcionFormateada" class="nunito-font"></p>
+          </ion-card-content>
+        </ion-card>
+      </div>
+
+      <div *ngSwitchCase="'resenas'">
+        <ion-card>
+          <ion-card-content>
+            <h2 class="nunito-bold" style="font-weight: 700;">Reseñas del producto</h2>
+            <!-- Listar las reseñas existentes -->
+            <div *ngFor="let review of resenas" class="review-item">
+              <p class="review-header nunito-font">
+                <strong>{{ review.nombre }}</strong> • {{ formatearFecha(review.fechaResena) }}
+              </p>
+              <div class="star-rating">
+                <app-star-rating [rating]="review.calificacion" [maxRating]="5" [readOnly]="true"
+                  [starSize]="'12px'"></app-star-rating>
+              </div>
+              <p class="review-comment nunito-font">{{ review.comentario }}</p>
+            </div>
+
+            <!-- Si no hay reseñas -->
+            <p *ngIf="resenas.length === 0" class="nunito-font">No hay reseñas para este producto aún.</p>
+
+            <!-- Textarea para escribir nueva reseña -->
+            <div *ngIf="usuario; else noSesionResena">
+              <ion-label position="floating" style="font-weight: 600; color: #333; margin-top: 50px;">Escribe tu reseña</ion-label>
+              <ion-textarea [(ngModel)]="comentario" required
+                style="--padding-start: 15px; --padding-end: 15px; font-size: 1rem; border-radius: 8px; border: 1px solid #ccc;">
+              </ion-textarea>
+              <div style="margin: 15px 0; text-align: center;">
+                <app-star-rating [(rating)]="calificacion" [maxRating]="5"
+                  (ratingChange)="onRatingChange($event)"></app-star-rating>
+              </div>
+            
+              <!-- Botón para enviar la reseña -->
+              <ion-button expand="block" (click)="enviarResena()" [disabled]="comentario.trim().length === 0"
+                style="margin-top: 15px;" color="dark">
+                Enviar
+              </ion-button>
+            </div>
+            <ng-template #noSesionResena>
+              <p class="no-sesion-message">Debes iniciar sesión para dejar una reseña.</p>
+            </ng-template>
+            
+
+          </ion-card-content>
+        </ion-card>
+      </div>
+
+
+    </div>
   </div>
 </ion-content>
 
-<ion-footer *ngIf="!isLoading" class="footer-container">
+<ion-footer *ngIf="!isLoading && !sinStock" class="footer-container">
   <div *ngIf="productoEnCarrito" class="cart-actions-container">
     <div class="quantity-controls">
       <ion-icon name="remove" class="quantity-icon" (click)="disminuirCantidad()"></ion-icon>
       <input type="number" [value]="cantidad" [min]="1" [max]="producto?.existencias" readonly class="quantity-input">
       <ion-icon name="add" class="quantity-icon" (click)="aumentarCantidad()"></ion-icon>
     </div>
-    <ion-button expand="block" shape="round" class="go-to-cart-button" (click)="irAlCarrito()">
+    <ion-button expand="block" shape="round" class="go-to-cart-button" (click)="irAlCarrito()" color="dark">
       Ir al carrito
     </ion-button>
   </div>
-  
-  
-  <div *ngIf="!productoEnCarrito">
-    <ion-button expand="full" shape="round" class="add-to-cart-button" (click)="agregarAlCarrito()">
-      Añadir al carrito
-    </ion-button>
+
+  <div *ngIf="usuario; else noSesion">
+    <div *ngIf="!productoEnCarrito">
+      <ion-button expand="full" shape="round" color="dark" class="add-to-cart-button" (click)="agregarAlCarrito()">
+        Añadir al carrito
+      </ion-button>
+    </div>
   </div>
+  <ng-template #noSesion>
+    <p class="no-sesion-message">Debes iniciar sesión para añadir al carrito.</p>
+  </ng-template>
+  
 </ion-footer>

@@ -1,0 +1,48 @@
+<ion-content [fullscreen]="true">
+  <div class="header-image-wrapper">
+    <img src="assets/header.png" alt="Header Image" class="header-image">
+    <div class="header-text">
+      <h6 class="title">Restablecer Contraseña</h6>
+      <p class="subtitle">Ingresa tu nueva contraseña para continuar</p>
+    </div>
+  </div>
+
+  <div class="ion-padding">
+    <form #resetForm="ngForm" (ngSubmit)="actualizarContrasenia()">
+      <!-- Nueva Contraseña -->
+      <ion-item>
+        <ion-label position="floating">Nueva Contraseña</ion-label>
+        <ion-input
+          [type]="showNuevaContrasenia ? 'text' : 'password'"
+          [(ngModel)]="nuevaContrasenia"
+          name="nuevaContrasenia"
+          required
+          #nuevaContraseniaInput="ngModel"
+          [ngClass]="{ 'invalid-input': nuevaContraseniaInput.invalid && (nuevaContraseniaInput.touched || resetForm.submitted) }">
+        </ion-input>
+        <ion-icon [name]="showNuevaContrasenia ? 'eye-off-outline' : 'eye-outline'" slot="end" (click)="togglePasswordVisibility('new')"></ion-icon>
+      </ion-item>
+      <ion-text color="danger" *ngIf="errores.nuevaContrasenia" class="error-message">{{ errores.nuevaContrasenia }}</ion-text>
+
+      <!-- Confirmar Nueva Contraseña -->
+      <ion-item>
+        <ion-label position="floating">Confirmar Nueva Contraseña</ion-label>
+        <ion-input
+          [type]="showConfirmarContrasenia ? 'text' : 'password'"
+          [(ngModel)]="confirmarContrasenia"
+          name="confirmarContrasenia"
+          required
+          #confirmarContraseniaInput="ngModel"
+          [ngClass]="{ 'invalid-input': confirmarContraseniaInput.invalid && (confirmarContraseniaInput.touched || resetForm.submitted) }">
+        </ion-input>
+        <ion-icon [name]="showConfirmarContrasenia ? 'eye-off-outline' : 'eye-outline'" slot="end" (click)="togglePasswordVisibility('confirm')"></ion-icon>
+      </ion-item>
+      <ion-text color="danger" *ngIf="errores.confirmarContrasenia" class="error-message">{{ errores.confirmarContrasenia }}</ion-text>
+
+      <!-- Botón para Actualizar Contraseña -->
+      <ion-button expand="block" type="submit" color="dark" [disabled]="resetForm.invalid">
+        Actualizar
+      </ion-button>
+    </form>
+  </div>
+</ion-content>

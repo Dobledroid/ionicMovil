@@ -1,13 +1,76 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>Registro</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Registro</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div class="header-image-wrapper">
+    <img src="assets/header.png" alt="Header Image" class="header-image">
+    <div class="header-text">
+      <h6 class="title">Crea una cuenta</h6>
+      <p class="subtitle">Ingrese sus datos para crear una cuenta</p>
+    </div>
+  </div>
+  <div style="padding: 15px;">
+    <form #registroForm="ngForm">
+      <!-- Nombre -->
+      <ion-item>
+        <ion-label position="floating">Nombre</ion-label>
+        <ion-input [(ngModel)]="nombre" name="nombre" type="text" required></ion-input>
+      </ion-item>
+      <div *ngIf="errores.nombre" class="error-message">{{ errores.nombre }}</div>
+
+      <!-- Apellido Paterno -->
+      <ion-item>
+        <ion-label position="floating">Apellido Paterno</ion-label>
+        <ion-input [(ngModel)]="apellidoPaterno" name="apellidoPaterno" type="text" required></ion-input>
+      </ion-item>
+      <div *ngIf="errores.apellidoPaterno" class="error-message">{{ errores.apellidoPaterno }}</div>
+
+      <!-- Apellido Materno -->
+      <ion-item>
+        <ion-label position="floating">Apellido Materno</ion-label>
+        <ion-input [(ngModel)]="apellidoMaterno" name="apellidoMaterno" type="text"></ion-input>
+      </ion-item>
+      <div *ngIf="errores.apellidoMaterno" class="error-message">{{ errores.apellidoMaterno }}</div>
+
+      <!-- Correo Electrónico -->
+      <ion-item>
+        <ion-label position="floating">Correo Electrónico</ion-label>
+        <ion-input [(ngModel)]="correoElectronico" name="correoElectronico" type="email" required></ion-input>
+      </ion-item>
+      <div *ngIf="errores.correoElectronico" class="error-message">{{ errores.correoElectronico }}</div>
+
+      <!-- Contraseña -->
+      <ion-item>
+        <ion-label position="floating">Contraseña</ion-label>
+        <ion-input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="contrasenia" name="contrasenia"
+          required></ion-input>
+        <ion-icon [name]="showPassword ? 'eye-off-outline' : 'eye-outline'" slot="end"
+          (click)="togglePasswordVisibility('password')"></ion-icon>
+      </ion-item>
+      <div *ngIf="errores.contrasenia" class="error-message">{{ errores.contrasenia }}</div>
+
+      <!-- Confirmar Contraseña -->
+      <ion-item>
+        <ion-label position="floating">Confirmar Contraseña</ion-label>
+        <ion-input [type]="showConfirmPassword ? 'text' : 'password'" [(ngModel)]="confirmarContrasenia"
+          name="confirmarContrasenia" required></ion-input>
+        <ion-icon [name]="showConfirmPassword ? 'eye-off-outline' : 'eye-outline'" slot="end"
+          (click)="togglePasswordVisibility('confirm')"></ion-icon>
+      </ion-item>
+      <div *ngIf="errores.confirmarContrasenia" class="error-message">{{ errores.confirmarContrasenia }}</div>
+
+      <!-- Aceptar Términos y Condiciones -->
+      <ion-item lines="none">
+        <ion-checkbox slot="start" [(ngModel)]="aceptaTerminos" name="aceptaTerminos" required></ion-checkbox>
+        <ion-label>Acepto los términos y condiciones</ion-label>
+      </ion-item>
+      <div *ngIf="errores.aceptaTerminos" class="error-message">{{ errores.aceptaTerminos }}</div>
+
+      <!-- Botón para Crear Cuenta -->
+      <ion-button expand="full" color="dark" (click)="registrarUsuario()" [disabled]="!registroForm.valid">
+        Crear Cuenta
+      </ion-button>
+    </form>
+
+    <div class="login-link-container">
+      <p>¿Ya tienes una cuenta? <a (click)="navigateToLogin()" class="login-link">Iniciar sesión</a></p>
+    </div>
+  </div>
 </ion-content>

@@ -1,0 +1,64 @@
+<ion-header [translucent]="true">
+  <ion-toolbar style="--background: #F2CB05;">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/direcciones"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="nunito-font toolbar-title">Agregar Una Dirección</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <form (ngSubmit)="guardarDireccion()" #direccionForm="ngForm" class="direccion-form">
+    <ion-item class="input-item">
+      <ion-label position="floating" class="input-label">Nombre *</ion-label>
+      <ion-input type="text" [(ngModel)]="nombre" name="nombre" required class="input-field"></ion-input>
+    </ion-item>
+
+    <ion-item class="input-item">
+      <ion-label position="floating" class="input-label">Apellidos *</ion-label>
+      <ion-input type="text" [(ngModel)]="apellidos" name="apellidos" required class="input-field"></ion-input>
+    </ion-item>
+
+    <ion-item class="input-item">
+      <ion-label position="floating" class="input-label">País *</ion-label>
+      <ion-input type="text" [(ngModel)]="pais" name="pais" required class="input-field"></ion-input>
+    </ion-item>
+
+    <ion-item class="input-item">
+      <ion-label position="floating" class="input-label">Código Postal *</ion-label>
+      <ion-input type="text" [(ngModel)]="codigoPostal" name="codigoPostal" required class="input-field"></ion-input>
+    </ion-item>
+
+    <ion-item class="input-item">
+      <ion-label position="floating" class="input-label">Estado *</ion-label>
+      <ion-input type="text" [(ngModel)]="estado" name="estado" value="Hidalgo" required class="input-field"></ion-input>
+    </ion-item>
+
+    <ion-item class="input-item">
+      <ion-label position="floating" class="input-label">Ciudad *</ion-label>
+      <ion-input type="text" [(ngModel)]="ciudad" name="ciudad" value="Huejutla de Reyes" required class="input-field"></ion-input>
+    </ion-item>
+
+    <ion-item class="input-item">
+      <ion-label position="floating" class="input-label">Colonia *</ion-label>
+      <ion-input type="text" [(ngModel)]="colonia" name="colonia" required class="input-field"></ion-input>
+    </ion-item>
+
+    <ion-item class="input-item">
+      <ion-label position="floating" class="input-label">Dirección *</ion-label>
+      <ion-input type="text" [(ngModel)]="direccion" name="direccion" required class="input-field"></ion-input>
+    </ion-item>
+
+    <ion-item class="input-item">
+      <ion-label position="floating" class="input-label">Teléfono *</ion-label>
+      <ion-input type="tel" [(ngModel)]="telefono" name="telefono" required class="input-field"></ion-input>
+    </ion-item>
+
+    <ion-item class="input-item">
+      <ion-label position="floating" class="input-label">Referencias *</ion-label>
+      <ion-input type="text" [(ngModel)]="referencias" name="referencias" required class="input-field"></ion-input>
+    </ion-item>
+
+    <ion-button expand="full" type="submit" [disabled]="!direccionForm.form.valid" class="save-button" color="dark">Guardar Dirección</ion-button>
+  </form>
+</ion-content>

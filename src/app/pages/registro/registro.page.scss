@@ -1,0 +1,61 @@
+.header-image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 200px;
+  }
+  
+  .header-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .header-text {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    color: #000;
+    font-family: 'Nunito', sans-serif;
+  }
+  
+  .title {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .subtitle {
+    font-size: 1rem;
+  }
+  
+  .login-link {
+    color: #000;
+    cursor: pointer;
+  }
+  
+
+  ion-item, ion-label, ion-input, ion-button, ion-checkbox, ion-icon {
+    font-family: 'Nunito', sans-serif;
+  }
+  
+  ion-item {
+    --highlight-color-focused: #F2CB05;
+    --background: #fff;
+    --border-radius: 8px;
+    margin-bottom: 15px;
+  }
+  
+  ion-button {
+    margin-top: 20px;
+    --background: #F2CB05;
+  }
+  
+  .error-message {
+    color: #ff0000; /* Rojo para destacar los mensajes de error */
+    font-size: 0.9em; /* Tamaño de letra ligeramente más pequeño que el input */
+    margin-top: 4px; /* Espacio entre el input y el mensaje de error */
+    margin-left: 8px; /* Alinear con el contenido del input */
+    font-family: 'Nunito', sans-serif; /* Asegurar la fuente Nunito */
+  }
+  

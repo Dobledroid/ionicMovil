@@ -1,0 +1,54 @@
+/* Estilos Generales */
+ion-content {
+    --ion-background-color: #f9f9f9; /* Fondo suave */
+  }
+  
+  .toolbar-title {
+    font-family: 'Nunito', sans-serif;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  /* Estilo para el Formulario */
+  .direccion-form {
+    margin-top: 20px;
+  }
+  
+  /* Estilos para los Elementos del Formulario */
+  .input-item {
+    margin-bottom: 15px; /* Espacio entre cada campo */
+  }
+  
+  .input-label {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .input-field {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    --padding-start: 15px;
+  }
+  
+  /* Botón de Guardar Dirección */
+  .save-button {
+    font-family: 'Nunito', sans-serif;
+    --background: #3880ff; /* Color de fondo */
+    --border-radius: 8px;
+    --padding-top: 10px;
+    --padding-bottom: 10px;
+    color: #fff;
+    font-weight: bold;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .save-button:disabled {
+    opacity: 0.6;
+  }
+  
+  .save-button:hover:not([disabled]) {
+    --background: #0056b3; /* Cambio de color al pasar el ratón */
+  }
+  

@@ -1,0 +1,53 @@
+<ion-header [translucent]="true">
+  <ion-toolbar style="--background: #F2CB05;">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/cuenta"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="nunito-font">Direcciones</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="agregarDireccion()">
+        <ion-icon name="add-outline"></ion-icon>
+        <ion-label>Agregar</ion-label>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Direcciones</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-spinner *ngIf="isLoading" name="dots" class="loading-spinner"></ion-spinner>
+
+  <ion-list *ngIf="!isLoading && direcciones.length > 0">
+    <ion-item *ngFor="let direccion of direcciones" class="direccion-item">
+      <!-- Ícono de dirección predeterminada -->
+      <ion-icon
+        slot="start"
+        [name]="direccion.predeterminado ? 'checkmark-circle' : 'ellipse-outline'"
+        [style.color]="direccion.predeterminado ? 'green' : 'gray'"
+        class="predeterminado-icon">
+      </ion-icon>
+
+      <!-- Contenido de la dirección -->
+      <ion-label>
+        <h2 class="nunito-font">{{ direccion.nombre }} {{ direccion.apellidos }}</h2>
+        <p class="nunito-font">{{ direccion.direccion }}, {{ direccion.colonia }}, {{ direccion.ciudad }}, {{ direccion.estado }}</p>
+        <p class="nunito-font">Código Postal: {{ direccion.codigoPostal }}</p>
+        <p class="nunito-font">Teléfono: {{ direccion.telefono }}</p>
+      </ion-label>
+
+      <!-- Menú de opciones con tres puntos -->
+      <ion-buttons slot="end">
+        <ion-button (click)="openOptionsPopover($event, direccion)">
+          <ion-icon name="ellipsis-vertical"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-list>
+
+  <p *ngIf="!isLoading && direcciones.length === 0" class="no-direcciones">No tienes direcciones guardadas.</p>
+</ion-content>

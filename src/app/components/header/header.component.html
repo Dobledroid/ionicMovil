@@ -1,3 +1,21 @@
-<p>
-  header works!
-</p>
+<ion-header [translucent]="true">
+  <ion-toolbar style="--background: #F2CB05;">
+    <ion-buttons slot="start">
+      <ion-back-button *ngIf="showBackButton" [defaultHref]="backButtonHref"></ion-back-button>
+      <ion-button (click)="abrirCarrito()">
+        <ion-badge color="danger" *ngIf="totalProductosEnCarrito > 0" class="badge">{{ totalProductosEnCarrito }}</ion-badge>
+        <ion-icon name="cart"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title class="nunito-font">{{ pageTitle }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="abrirFavoritos()">
+        <ion-badge color="danger" *ngIf="cantidadFavoritos > 0" class="badge">{{ cantidadFavoritos }}</ion-badge>
+        <ion-icon name="heart"></ion-icon>
+      </ion-button>
+      <ion-button>
+        <span>$ {{ totalPrecio }}</span>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>

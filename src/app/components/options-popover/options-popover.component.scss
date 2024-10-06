@@ -1,0 +1,20 @@
+ion-list {
+  padding: 10px;
+}
+
+ion-item {
+  --background: #f9f9f9; /* Fondo gris claro */
+  border-radius: 8px;
+  margin-bottom: 5px;
+
+  ion-label {
+    font-family: "Nunito", sans-serif; /* Fuente Nunito */
+    font-weight: 500;
+    font-size: 1rem; /* Tamaño ajustable para el texto */
+    color: #333; /* Color del texto */
+  }
+
+  &:hover {
+    --background: #e0e0e0; /* Fondo al pasar el ratón */
+  }
+}

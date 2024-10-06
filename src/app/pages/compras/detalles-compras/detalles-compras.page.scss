@@ -1,0 +1,81 @@
+:host {
+    --background: #F2CB05;
+  }
+  
+  ion-toolbar {
+    --background: var(--background);
+    font-family: 'Nunito', sans-serif;
+  }
+  
+  .loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .content-container {
+    padding: 16px;
+  }
+  
+  ion-card {
+    margin-bottom: 16px;
+  }
+  
+  ion-card-header {
+    background-color: #f9f9f9;
+    font-weight: bold;
+  }
+  
+  ion-card-content {
+    font-size: 16px;
+    color: #333;
+  }
+  
+  ion-thumbnail img {
+    max-width: 80px;
+    max-height: 80px;
+    object-fit: cover;
+  }
+  
+  .no-details-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    text-align: center;
+  }
+  
+  ion-item {
+    --min-height: 100px;
+  }
+  
+  ion-label h6 {
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    align-items: center;
+  }
+  
+  .product-title-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  ion-label p {
+    font-size: 14px;
+    color: #666;
+    margin: 4px 0;
+  }
+  
+  ion-badge {
+    font-size: 14px;
+    padding: 6px 10px;
+    border-radius: 8px;
+  }
+  
+  ion-icon {
+    margin-left: 5px;
+    cursor: pointer;
+  }
+  

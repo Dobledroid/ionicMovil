@@ -1,44 +1,58 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>Carrito</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header [pageTitle]="'Carrito'"></app-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Carrito</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div *ngIf="usuario; else noSesionTemplate">
+    <ion-header collapse="condense">
+      <ion-toolbar>
+        <ion-title size="large">Carrito</ion-title>
+      </ion-toolbar>
+    </ion-header>
 
-  <ion-spinner *ngIf="isLoading" name="dots" class="loading-spinner"></ion-spinner>
+    <ion-spinner *ngIf="isLoading" name="dots" class="loading-spinner"></ion-spinner>
 
-  <div *ngIf="!isLoading">
-    <ion-list *ngIf="!isLoading">
-      <ion-item *ngFor="let producto of carritoProductos">
-        <ion-thumbnail slot="start">
-          <img [src]="producto.imagenUrl" alt="Imagen del producto">
-        </ion-thumbnail>
-        <ion-label>
-          <h2>{{ producto.nombre }}</h2>
-          <div class="price-quantity-container">
-            <span class="product-price">{{ producto.precioFinal | currency:'MXN':'symbol':'1.2-2' }}</span>
-            <div class="quantity-controls">
-              <ion-icon name="remove" class="quantity-icon" (click)="disminuirCantidad(producto)"></ion-icon>
-              <input type="number" [value]="producto.cantidad" [min]="1" [max]="producto.existencias" readonly class="quantity-input">
-              <ion-icon name="add" class="quantity-icon" (click)="aumentarCantidad(producto)"></ion-icon>
-            </div>
-          </div>
-        </ion-label>
-      </ion-item>
-    </ion-list>
-    
-    <ng-template #noProductos>
-      <ion-card>
-        <ion-card-content>
-          <h3>No tienes productos en el carrito</h3>
-        </ion-card-content>
-      </ion-card>
-    </ng-template>
+    <div *ngIf="!isLoading" class="content-container">
+      <!-- Lista de productos del carrito -->
+      <div class="carrito-productos-container" *ngIf="carritoProductos.length > 0">
+        <ion-list>
+          <ion-item *ngFor="let producto of carritoProductos">
+            <ion-thumbnail slot="start">
+              <img [src]="producto.imagenUrl" alt="Imagen del producto">
+            </ion-thumbnail>
+            <ion-label>
+              <h5 [ngClass]="{'stock-error': producto.sinStock}">{{ producto.nombre }}</h5>
+              <div class="price-quantity-container">
+                <span class="product-price">{{ producto.precioFinal | currency:'MXN':'symbol':'1.2-2' }}</span>
+                <div class="quantity-controls">
+                  <ion-icon name="remove" class="quantity-icon" (click)="disminuirCantidad(producto)"></ion-icon>
+                  <input type="number" [value]="producto.cantidad" [min]="1" [max]="producto.existencias" readonly
+                    class="quantity-input">
+                  <ion-icon name="add" class="quantity-icon" (click)="aumentarCantidad(producto)"></ion-icon>
+                </div>
+                <ion-icon name="trash" color="danger" class="delete-icon" (click)="confirmarEliminarProducto(producto)"></ion-icon>
+              </div>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </div>
+
+      <!-- Mensaje cuando no hay productos en el carrito -->
+      <div *ngIf="carritoProductos.length === 0" class="no-products-container">
+        <h6 class="no-products-message">No tienes productos en el carrito</h6>
+      </div>
+
+      <!-- Botón de proceder al pago -->
+      <ion-footer *ngIf="carritoProductos.length > 0" class="footer-container">
+        <ion-button expand="full" shape="round" color="dark" (click)="irAPago()" [disabled]="!puedePagar">
+          Proceder al Pago
+        </ion-button>
+      </ion-footer>
+    </div>
   </div>
+
+  <!-- Mensaje cuando no hay sesión iniciada -->
+  <ng-template #noSesionTemplate>
+    <div class="no-session-container">
+      <p class="no-session-message">Debes iniciar sesión para ver tu carrito.</p>
+    </div>
+  </ng-template>
 </ion-content>

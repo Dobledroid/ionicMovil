@@ -77,7 +77,7 @@ export class IniciarSesionPage implements OnInit {
             console.log('Datos de sesión guardados correctamente.');
   
             // Redirigir a la vista de inicio
-            await this.router.navigate(['/home2']);
+            window.location.href = '/inicio';
           } catch (error) {
             console.error('Error al guardar los datos de sesión:', error);
             const alert = await this.alertController.create({
@@ -100,8 +100,5 @@ export class IniciarSesionPage implements OnInit {
     }
   }
   
-  goToRegistro() {
-    console.log("VALIDACION");
-    this.router.navigate(['/home2']);
-  }
+ 
 }

@@ -1,0 +1,68 @@
+<ion-header [translucent]="true">
+  <ion-toolbar style="--background: #F2CB05;">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/carrito"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="nunito-font">Finalizar compra</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Finalizar compra</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-spinner *ngIf="isLoading" name="dots" class="loading-spinner"></ion-spinner>
+
+  <div *ngIf="!isLoading">
+  <div *ngIf="direccion">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Dirección de Envío</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p><strong>{{ direccion.nombre }} {{ direccion.apellidos }}</strong></p>
+        <p>{{ direccion.direccion }}, {{ direccion.colonia }}</p>
+        <p>{{ direccion.ciudad }}, {{ direccion.estado }}</p>
+        <p>Código Postal: {{ direccion.codigoPostal }}</p>
+        <p>Teléfono: {{ direccion.telefono }}</p>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <ion-list *ngIf="productos.length > 0" class="container">
+    <h6 class="nunito-bold">Productos a comprar</h6>
+    <ion-item *ngFor="let producto of productos">
+      <ion-thumbnail slot="start">
+        <img [src]="producto.imagenUrl" alt="Imagen del producto">
+      </ion-thumbnail>
+      <ion-label>
+        <h6 [ngClass]="{'stock-error': producto.sinStock}">{{ producto.nombre }}</h6>
+        <p>Cantidad: {{ producto.cantidad }}</p>
+        <p>Precio: {{ (producto.precioFinal * producto.cantidad) | currency:'MXN':'symbol':'1.2-2' }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-card class="pedido-container" *ngIf="totalPedido > 0">
+    <ion-card-header>
+      <ion-card-title>Su Pedido</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p>Total: {{ totalPedido | currency:'MXN':'symbol':'1.2-2' }}</p>
+    </ion-card-content>
+  </ion-card>
+
+  <p *ngIf="productos.length === 0">No hay productos en el carrito.</p>
+</div>
+</ion-content>
+
+<ion-footer  *ngIf="!isLoading">
+  <ion-toolbar>
+    <ion-button expand="full" (click)="presentPaymentSheet()" class="checkout-button" color="dark" [disabled]="!puedePagar">
+      Pagar
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

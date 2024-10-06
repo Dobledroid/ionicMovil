@@ -1,0 +1,88 @@
+<ion-header [translucent]="true">
+  <ion-toolbar style="--background: #F2CB05;">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/compras"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="nunito-font">Detalles del Pedido</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Detalles del Pedido</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-spinner *ngIf="cargando" name="dots" class="loading-spinner"></ion-spinner>
+
+  <div *ngIf="!cargando" class="content-container">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Información del Pedido</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p><strong>ID del Pedido:</strong> {{ detallesPedido.ID_pedido }}</p>
+        <p><strong>Fecha:</strong> {{ detallesPedido.fecha | date:'short' }}</p>
+        <p><strong>Estado:</strong> {{ detallesPedido.operacion_status === 'succeeded' ? 'Exitoso' : 'Error' }}</p>
+        <p><strong>Total:</strong> {{ detallesPedido.total | currency:'MXN':'symbol':'1.2-2' }}</p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Productos del Pedido</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-item *ngFor="let producto of detallesPedido.productos">
+            <ion-thumbnail slot="start">
+              <img [src]="producto.imagenUrl" alt="Imagen del producto">
+            </ion-thumbnail>
+            <ion-label>
+              <div class="product-title-container">
+                <ng-container *ngIf="producto.expanded; else abreviado">
+                  <h6>{{ producto.producto }}
+                    <ion-icon name="close-circle-outline" (click)="producto.expanded = false"></ion-icon>
+                  </h6>
+                </ng-container>
+                <ng-template #abreviado>
+                  <h6>{{ producto.producto | slice:0:30 }}...
+                    <ion-icon name="information-circle-outline" (click)="producto.expanded = true"></ion-icon>
+                  </h6>
+                </ng-template>
+              </div>
+              <p>Precio Unitario: {{ producto.precioUnitario | currency:'MXN':'symbol':'1.2-2' }}</p>
+              <p>Cantidad: {{ producto.cantidad }}</p>
+              <p>Total: {{ producto.total | currency:'MXN':'symbol':'1.2-2' }}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Información del Envío</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p><strong>Nombre:</strong> {{ detallesPedido.direccion.nombre }} {{ detallesPedido.direccion.apellidos }}</p>
+        <p><strong>Dirección:</strong> {{ detallesPedido.direccion.direccion }}</p>
+        <p><strong>Colonia:</strong> {{ detallesPedido.direccion.colonia }}</p>
+        <p><strong>Ciudad:</strong> {{ detallesPedido.direccion.ciudad }}</p>
+        <p><strong>Estado:</strong> {{ detallesPedido.direccion.estado }}</p>
+        <p><strong>Código Postal:</strong> {{ detallesPedido.direccion.cp }}</p>
+        <p><strong>Teléfono:</strong> {{ detallesPedido.direccion.tel }}</p>
+        <p><strong>Referencias:</strong> {{ detallesPedido.direccion.referencias }}</p>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <div *ngIf="!cargando && !detallesPedido" class="no-details-container">
+    <ion-card>
+      <ion-card-content>
+        <h3>No se encontraron detalles para este pedido</h3>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

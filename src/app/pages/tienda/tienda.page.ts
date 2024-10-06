@@ -7,17 +7,20 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
+import { HeaderComponent } from 'src/app/components/header/header.component';
 
 @Component({
   selector: 'app-tienda',
   templateUrl: './tienda.page.html',
   styleUrls: ['./tienda.page.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule, HttpClientModule]
+  imports: [CommonModule, IonicModule, HttpClientModule, HeaderComponent]
 })
 export class TiendaPage implements OnInit {
 
   productos: any[] = [];
+  productosFiltrados: any[] = [];
+  valorBusqueda: string = '';
   isLoading: boolean = true;
 
   constructor(private http: HttpClient,
@@ -38,6 +41,7 @@ export class TiendaPage implements OnInit {
           ...producto,
           nombre: this.normalizeProductName(producto.nombre), 
         }));
+        this.productosFiltrados = [...this.productos];
         this.isLoading = false;
       },
       (error) => {
@@ -73,6 +77,21 @@ export class TiendaPage implements OnInit {
   
     return limitedWords;
   }
+
+
+  buscarProducto(event: any) {
+    const valor = event.target.value.toLowerCase();
+  
+    if (valor && valor.trim() !== '') {
+      this.productosFiltrados = this.productos.filter((producto) =>
+        producto.nombre.toLowerCase().includes(valor)
+      );
+    } else {
+      this.productosFiltrados = [...this.productos];
+    }
+  }
+  
+
 
   verProducto(producto: any) {
     this.navCtrl.navigateForward(`/ver-producto/${producto.ID_producto}`);

@@ -1,0 +1,44 @@
+<ion-header [translucent]="true">
+  <ion-toolbar style="--background: #F2CB05;">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/cuenta"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="nunito-font">Cambiar Contraseña</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Cambiar Contraseña</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <form #changePasswordForm="ngForm">
+    <!-- Contraseña Actual -->
+    <ion-item>
+      <ion-label position="floating">Contraseña Actual</ion-label>
+      <ion-input [type]="showCurrentPassword ? 'text' : 'password'" [(ngModel)]="currentPassword" name="currentPassword" required></ion-input>
+      <ion-icon [name]="showCurrentPassword ? 'eye-off-outline' : 'eye-outline'" slot="end" (click)="togglePasswordVisibility('current')"></ion-icon>
+    </ion-item>
+
+    <!-- Nueva Contraseña -->
+    <ion-item>
+      <ion-label position="floating">Nueva Contraseña</ion-label>
+      <ion-input [type]="showNewPassword ? 'text' : 'password'" [(ngModel)]="newPassword" name="newPassword" required></ion-input>
+      <ion-icon [name]="showNewPassword ? 'eye-off-outline' : 'eye-outline'" slot="end" (click)="togglePasswordVisibility('new')"></ion-icon>
+    </ion-item>
+
+    <!-- Confirmar Nueva Contraseña -->
+    <ion-item>
+      <ion-label position="floating">Confirmar Nueva Contraseña</ion-label>
+      <ion-input [type]="showConfirmPassword ? 'text' : 'password'" [(ngModel)]="confirmPassword" name="confirmPassword" required></ion-input>
+      <ion-icon [name]="showConfirmPassword ? 'eye-off-outline' : 'eye-outline'" slot="end" (click)="togglePasswordVisibility('confirm')"></ion-icon>
+    </ion-item>
+
+    <!-- Botón para Cambiar Contraseña -->
+    <ion-button expand="full" color="dark" (click)="cambiarContrasenia()" [disabled]="!changePasswordForm.valid">
+      Cambiar Contraseña
+    </ion-button>
+  </form>
+</ion-content>

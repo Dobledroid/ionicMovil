@@ -1,16 +1,41 @@
+<app-header [pageTitle]="'Inicio'"></app-header>
 
-<app-header></app-header>
 <ion-content class="ion-padding">
-  <div *ngIf="sesionActiva; else noSessionTemplate">
-    <h2>Bienvenido, {{ nombreUsuario }}!</h2>
-    <p>Gracias por iniciar sesión. Aquí puedes acceder a funciones adicionales.</p>
-  </div>
+  <ion-spinner *ngIf="isLoading" name="dots" class="loading-spinner"></ion-spinner>
 
-  <ng-template #noSessionTemplate>
-    <h2>Bienvenido a SportApp!</h2>
-    <p>No has iniciado sesión. Por favor, inicia sesión para disfrutar de más funciones.</p>
-  </ng-template>
+  <ng-container *ngIf="!isLoading">
+    <ion-searchbar class="rounded-searchbar" placeholder="Buscar producto"
+      (ionInput)="buscarProducto($event)"></ion-searchbar>
 
-<ion-tabs></ion-tabs>
+    <h6 class="nunito-bold">Categorías</h6>
+    <div class="categories-container">
+      <ion-grid>
+        <ion-row class="category-row">
+          <ion-col size="3" size-sm="3" *ngFor="let categoria of categorias">
+            <ion-card class="category-card" (click)="verCategoria(categoria)">
+              <div class="image-container">
+                <img [src]="categoria.imagenUrl" alt="{{ categoria.nombre }}">
+              </div>
+            </ion-card>
+            <p class="category-title nunito-light">{{ categoria.nombre }}</p>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
 
+    <h6 class="nunito-bold">Productos</h6>
+    <ion-row>
+      <ion-col size="6" size-md="4" *ngFor="let producto of productosFiltrados">
+        <ion-card class="product-card" (click)="verProducto(producto)">
+          <ion-img class="product-image" [src]="producto.imagenUrl"></ion-img>
+          <ion-card-header>
+            <ion-card-title class="product-title">{{ producto.nombre }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <p class="product-price">{{ producto.precioFinal | currency:'MXN':'symbol':'1.0-0' }}</p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ng-container>
 </ion-content>

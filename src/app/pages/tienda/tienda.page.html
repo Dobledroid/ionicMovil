@@ -1,15 +1,13 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>Tienda</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header [pageTitle]="'Tienda'"></app-header>
 
 <ion-content class="ion-padding">
+  <ion-searchbar placeholder="Buscar producto" (ionInput)="buscarProducto($event)"></ion-searchbar>
+
   <ion-spinner *ngIf="isLoading" name="dots" class="loading-spinner"></ion-spinner>
 
   <ion-grid *ngIf="!isLoading">
     <ion-row>
-      <ion-col size="6" size-md="4" *ngFor="let producto of productos">
+      <ion-col size="6" size-md="4" *ngFor="let producto of productosFiltrados">
         <ion-card class="product-card" (click)="verProducto(producto)">
           <ion-img class="product-image" [src]="producto.imagenUrl"></ion-img>
           <ion-card-header>

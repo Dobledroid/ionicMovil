@@ -1,0 +1,42 @@
+<ion-content [fullscreen]="true">
+  <div class="header-image-wrapper">
+    <img src="assets/header.png" alt="Header Image" class="header-image">
+    <div class="header-text">
+      <h6 class="title">Recuperar Contraseña</h6>
+      <p class="subtitle">Ingrese su correo electrónico para continuar</p>
+    </div>
+  </div>
+
+  <div class="ion-padding">
+    <form #recuperarForm="ngForm" (ngSubmit)="validarCorreo()">
+      <!-- Correo Electrónico -->
+      <ion-item>
+        <ion-label position="floating">Correo Electrónico</ion-label>
+        <ion-input 
+          type="email" 
+          [(ngModel)]="correoElectronico" 
+          name="correoElectronico" 
+          required
+          #correoInput="ngModel"
+          (ngModelChange)="validateEmail()"
+          [ngClass]="{ 'invalid-input': correoInput.invalid && (correoInput.touched || recuperarForm.submitted) }">
+        </ion-input>
+      </ion-item>
+      <ion-text color="danger" *ngIf="correoInput.invalid && (correoInput.touched || recuperarForm.submitted)">
+        <div *ngIf="correoInput.errors?.['required']" class="error-message">El correo electrónico es obligatorio.</div>
+        <div *ngIf="correoInput.errors?.['email']" class="error-message">Ingrese un correo electrónico válido que contenga "&#64;".</div>
+      </ion-text>
+      <!-- Botón para validar correo -->
+      <ion-button expand="block" type="submit" color="dark" [disabled]="!isEmailValid">
+        Validar Correo Electrónico
+      </ion-button>
+    </form>
+
+    <!-- Link para iniciar sesión -->
+    <div class="link-container ion-text-center">
+      <ion-text>
+        <a routerLink="/iniciar-sesion" class="login-link">¿Ya tienes una cuenta? Inicia sesión</a>
+      </ion-text>
+    </div>
+  </div>
+</ion-content>

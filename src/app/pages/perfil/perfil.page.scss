@@ -1,0 +1,81 @@
+ion-content {
+    --background: #f9f9f9;
+    padding: 16px;
+  
+    .form-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    }
+  
+    ion-item {
+      --inner-padding-top: 12px;
+      --inner-padding-bottom: 12px;
+      --background: transparent;
+  
+      ion-label {
+        font-family: 'Nunito', sans-serif;
+        font-weight: 600;
+        color: #555;
+      }
+  
+      ion-input,
+      ion-datetime,
+      ion-select {
+        font-size: 16px;
+        font-family: 'Nunito', sans-serif;
+        color: #333;
+      }
+    }
+  
+    ion-button {
+      margin-top: 20px;
+      display: block;
+      width: 100%;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+  
+      &:hover {
+        --background: #ffc107;
+      }
+    }
+  
+    .loading-spinner {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+  }
+  
+  ion-header {
+    ion-toolbar {
+      --background: #F2CB05;
+  
+      ion-title {
+        text-align: center;
+        font-family: 'Nunito', sans-serif;
+        font-weight: bold;
+        color: #333;
+      }
+    }
+  }
+  
+  ion-back-button {
+    color: #333;
+    --icon-size: 24px;
+  }
+  
+  .form-title {
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    font-family: 'Nunito', sans-serif;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  

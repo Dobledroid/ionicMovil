@@ -1,0 +1,7 @@
+<ion-icon
+  *ngFor="let star of stars"
+  [name]="getStarIcon(star)"
+  (click)="setRating(star)"
+  [class]="star <= rating ? 'filled' : 'empty'"
+  [ngStyle]="{ 'font-size': starSize }">
+</ion-icon>

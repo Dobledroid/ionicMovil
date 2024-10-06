@@ -1,0 +1,58 @@
+.loading-spinner {
+    display: block;
+    margin: 50px auto;
+  }
+  
+  .content-container {
+    padding: 20px;
+  }
+  
+  ion-list {
+    margin-bottom: 15px;
+  }
+  
+  ion-item {
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    padding: 10px;
+  }
+  
+  ion-item:hover {
+    background-color: #f2f2f2;
+    cursor: pointer;
+  }
+  
+  ion-label h6 {
+    font-family: 'Nunito', sans-serif;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  ion-label p {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    color: #666;
+  }
+  
+  .no-orders-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 200px); // Ajustar altura
+    text-align: center;
+  }
+  
+  .no-orders-container ion-card {
+    max-width: 400px;
+    margin: auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .no-orders-container h3 {
+    font-family: 'Nunito', sans-serif;
+    font-weight: bold;
+    color: #555;
+  }
+  

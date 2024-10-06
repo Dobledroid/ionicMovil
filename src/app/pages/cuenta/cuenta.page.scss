@@ -1,0 +1,58 @@
+.nunito-font {
+    font-family: 'Nunito', sans-serif;
+  }
+  
+  .user-avatar {
+    margin: 0px auto 20px auto;
+    width: 100px;
+    height: 100px;
+    display: block;
+  }
+  
+  .user-name {
+    font-weight: bold;
+    font-size: 1.4rem;
+    color: #333;
+    margin-top: 10px;
+  }
+  
+  .ion-item ion-label {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem; /* Ajusta el tamaño de la fuente según lo necesites */
+    color: #000; /* Color de las etiquetas de los items */
+  }
+  
+  .ion-item ion-icon {
+    color: #3880ff; /* Cambia el color de los iconos según tu preferencia */
+  }
+  
+  .ion-item[button][color="danger"] ion-icon,
+  .ion-item[button][color="danger"] ion-label {
+    color: #d9534f; /* Color rojo para cerrar sesión */
+  }
+  
+  .ion-item {
+    --border-color: #ccc; /* Color del borde del item */
+    --background: transparent;
+    padding: 10px 15px; /* Ajusta el padding según tus necesidades */
+  }
+  
+
+  .no-session-container {
+    text-align: center;
+    margin-top: 50px;
+    font-family: 'Nunito', sans-serif;
+  }
+  
+  .no-session-message {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  ion-button {
+    margin: 10px 0;
+    font-family: 'Nunito', sans-serif;
+    text-transform: none;
+  }
+  

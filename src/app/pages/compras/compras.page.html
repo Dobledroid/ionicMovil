@@ -1,0 +1,38 @@
+<ion-header [translucent]="true">
+  <ion-toolbar style="--background: #F2CB05;">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/cuenta"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="nunito-font">Compras</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Compras</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-spinner *ngIf="cargando" name="dots" class="loading-spinner"></ion-spinner>
+
+  <div *ngIf="!cargando" class="content-container">
+    <ion-list *ngFor="let pedido of detallesPorPedido">
+      <ion-item (click)="verDetallePedido(pedido.ID_pedido)">
+        <ion-label>
+          <h6>Fecha: {{ pedido.fecha | date: 'medium' }}</h6>
+          <p>Total Productos: {{ pedido.detalles.length }}</p>
+          <p>Total Pedido: {{ calcularTotalPedido(pedido.detalles) | currency:'MXN':'symbol':'1.2-2' }}</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+
+    <div *ngIf="detallesPorPedido.length === 0" class="no-orders-container">
+      <ion-card>
+        <ion-card-content>
+          <h3>No tienes compras realizadas</h3>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+</ion-content>

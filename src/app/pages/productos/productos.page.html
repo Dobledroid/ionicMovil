@@ -1,0 +1,26 @@
+<app-header [pageTitle]="''" [showBackButton]="true" [backButtonHref]="'/Inicio'"></app-header>
+
+<ion-content class="ion-padding">
+  <h6 class="nunito-bold centered-text">Productos de la categoria {{nombreCategoria}}</h6>
+
+
+  <ion-searchbar placeholder="Buscar producto" (ionInput)="buscarProducto($event)" class="rounded-searchbar"></ion-searchbar>
+
+  <ion-spinner *ngIf="isLoading" name="dots" class="loading-spinner"></ion-spinner>
+
+  <ion-grid *ngIf="!isLoading">
+    <ion-row>
+      <ion-col size="6" size-md="4" *ngFor="let producto of productosFiltrados">
+        <ion-card class="product-card" (click)="verProducto(producto)">
+          <ion-img class="product-image" [src]="producto.imagenUrl"></ion-img>
+          <ion-card-header>
+            <ion-card-title class="product-title">{{ producto.nombre }}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <p class="product-price">{{ producto.precioFinal | currency:'MXN':'symbol':'1.0-0' }}</p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

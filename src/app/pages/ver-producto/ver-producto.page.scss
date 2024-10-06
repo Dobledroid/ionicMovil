@@ -1,3 +1,149 @@
+.product-info-container {
+  padding: 20px 15px;
+}
+
+.title-container {
+  display: flex;
+  align-items: center;
+}
+
+.product-title {
+  font-family: 'Nunito', sans-serif;
+  font-weight: bold;
+  color: #000;
+  margin-right: 10px;
+}
+
+.toggle-button {
+  font-size: 1.5rem; /* Tamaño del icono */
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.toggle-button.expanded {
+  transform: rotate(180deg); /* Rota la flecha hacia arriba cuando está expandido */
+}
+
+.product-price {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 600;
+  color: red; /* Color rojo para el precio */
+  margin-bottom: 10px; /* Espacio debajo del precio */
+}
+
+.bordered-container {
+  border: 1px solid #ccc; /* Color del borde */
+  padding: 15px;
+  border-radius: 8px; /* Bordes redondeados */
+  margin-top: 15px; /* Espacio encima del contenedor */
+  background-color: #f9f9f9; /* Fondo suave para destacar */
+}
+
+
+.gallery-container {
+  display: flex;
+  align-items: flex-start;
+}
+
+.main-image {
+  flex: 3;
+  padding: 10px;
+}
+
+.main-image img {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.thumbnail-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+}
+
+.thumbnail-container img {
+  width: 100%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  transition: border-color 0.3s;
+}
+
+.thumbnail-container img.active {
+  border-color: #3880ff; /* Color del borde activo */
+}
+
+
+.lightbox {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-content {
+  overflow: hidden; /* Evitar que la imagen se desborde al hacer zoom */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  margin: 20px; /* Añadir margen para separar la imagen del borde */
+  box-sizing: border-box; /* Asegura que el margen no afecte el tamaño total */
+}
+
+.zoomable-image {
+  max-width: 100%;
+  max-height: 100%;
+  transition: transform 0.25s ease; /* Suaviza el zoom */
+  cursor: zoom-in; /* Cambia el cursor para indicar zoom */
+}
+
+
+.close-icon {
+  position: absolute;
+  top: 80px;
+  right: 18px;
+  font-size: 40px;
+  color: #3880ff;
+  cursor: pointer;
+  z-index: 1100;
+}
+
+.main-image-slider {
+  height: 300px; /* Altura constante */
+  width: 100%; /* Ajusta según tus necesidades */
+  max-width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.main-image-slider img {
+  height: 100%;
+  width: auto;
+  transition: transform 1s ease-in-out; /* Duración de la transición */
+}
+
+.image-counter {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
 .content-container {
     margin-bottom: 80px; /* Ajustar según la altura del footer */
   }
@@ -49,5 +195,107 @@
   .go-to-cart-button {
     flex: 1;
     max-width: 70%;
+  }
+  
+
+  .review-item {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 15px;
+  }
+  
+  .review-header {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+    font-size: 1rem;
+  }
+  
+  .small-stars ion-icon {
+    font-size: 2px; /* Tamaño pequeño para las estrellas */
+  }
+  
+  
+  .review-comment {
+    font-size: 0.9rem;
+    color: #555;
+  }
+  
+  ion-segment-button ion-label {
+    text-transform: capitalize;
+  }
+  
+  .bordered-container-pr {
+    border: 2px solid #ccc; /* Borde gris claro */
+    padding: 10px;
+    border-radius: 10px; /* Bordes redondeados */
+    display: flex;
+    flex-direction: row; /* Cambiado a fila */
+    align-items: center; /* Alinear en la misma línea */
+    justify-content: space-between; /* Asegurar que los elementos ocupen el espacio necesario */
+  }
+  
+  .quantity-label-pr {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem; /* Tamaño más pequeño para reducir la altura */
+    color: #333;
+    margin-right: 15px; /* Espacio entre el label y los controles */
+  }
+  
+  .quantity-controls-pr {
+    display: flex;
+    align-items: center;
+    border: 1px solid #000; /* Borde negro para el contenedor */
+    padding: 5px; /* Reducido el padding para minimizar la altura */
+    border-radius: 5px; /* Bordes redondeados */
+    background-color: #fff; /* Fondo blanco */
+  }
+  
+  .quantity-icon-pr {
+    font-size: 1.2rem; /* Reducir tamaño de los iconos */
+    color: #3880ff; /* Color del icono */
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 3px; /* Reducir padding para minimizar la altura */
+    transition: color 0.3s ease;
+  }
+  
+  .quantity-icon-pr:hover {
+    color: #0056b3; /* Color cuando se pasa el ratón */
+  }
+  
+  .quantity-input-pr {
+    width: 40px; /* Reducir ancho del input */
+    text-align: center;
+    font-size: 1rem; /* Reducir tamaño de fuente */
+    font-family: 'Nunito', sans-serif;
+    border: none; /* Quitar el borde del input */
+    margin: 0 5px; /* Reducir espacio entre los iconos y el input */
+  }
+  
+  .favorite-icon-pr {
+    font-size: 1.8rem;
+    color: #ccc; /* Color del corazón cuando no está en favoritos */
+    cursor: pointer;
+    margin-left: 15px; /* Espacio entre el icono de cantidad y el corazón */
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+  
+  .favorite-icon-pr.favorite-active {
+    color: #e63946; /* Cambiar a color rojo si está en favoritos */
+  }
+  
+  .favorite-icon-pr:hover {
+    transform: scale(1.1); /* Aumentar ligeramente el tamaño al pasar el ratón */
+  }
+  
+
+  .no-sesion-message {
+    font-family: 'Nunito', sans-serif;
+    color: #e53935;
+    text-align: center;
+    font-weight: bold;
   }
   

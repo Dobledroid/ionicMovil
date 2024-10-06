@@ -1,11 +1,16 @@
-<ion-content>
-  <img src="assets/header.png" alt="Header Image" class="header-image">
-
+<ion-content [fullscreen]="true">
+  <div class="header-image-wrapper">
+    <img src="assets/header.png" alt="Header Image" class="header-image">
+    <div class="header-text">
+      <h6 class="title">Iniciar Sesión</h6>
+      <p class="subtitle" style="padding-left: 10px; padding-right: 10px;">Ingrese su nombre de usuario y contraseña para iniciar sesión</p>
+    </div>
+  </div>
   <div class="ion-padding">
     <form #loginForm="ngForm" (ngSubmit)="onSubmit()">
       <ion-list>
         <ion-item>
-          <ion-input labelPlacement="stacked" label="Correo Electrónico" placeholder="email@domain.com" type="email"
+          <ion-input labelPlacement="stacked" label="Correo Electrónico" placeholder="correo@gmail.com" type="email"
             required email [(ngModel)]="email" name="email" #emailInput="ngModel"
             [ngClass]="{ 'invalid-input': emailInput.invalid && (emailInput.touched || loginForm.submitted) }">
             <ion-icon slot="start" name="mail" aria-hidden="true"></ion-icon>
@@ -38,7 +43,7 @@
 
     <div class="link-container ion-text-center">
       <ion-text>
-        <a routerLink='/recuperar-contrasena'>¿Olvidó su contraseña?</a>
+        <a routerLink='/recuperacion'>¿Olvidó su contraseña?</a>
       </ion-text>
       <ion-text>
         <a routerLink="/registro">Registrar una nueva cuenta</a>

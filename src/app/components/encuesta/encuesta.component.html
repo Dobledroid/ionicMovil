@@ -1,0 +1,34 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Encuesta</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <!-- Mensaje de agradecimiento -->
+  <div class="agradecimiento">
+    <h2>¡Muchas gracias por haber realizado tu compra!</h2>
+    <p>¿Cómo fue tu experiencia?</p>
+  </div>
+
+  <!-- Sección de emojis para calificación -->
+  <div class="emoji-row">
+    <div class="emoji-container">
+      <div id="emoji-triste" class="emoji emoji-triste" (click)="selectEmoji('No me gustó')"></div>
+    </div>
+
+    <div class="emoji-container">
+      <div id="emoji-neutro" class="emoji emoji-neutro" (click)="selectEmoji('Neutral')"></div>
+    </div>
+
+    <div class="emoji-container">
+      <div id="emoji-feliz" class="emoji emoji-feliz" (click)="selectEmoji('Me encantó')"></div>
+    </div>
+  </div>
+
+  <div class="detalle-pedido">
+    <ion-button expand="block" color="dark" class="detalle-button" (click)="verDetallePedido()">
+      Ir a ver mi detalle de pedidos
+    </ion-button>
+  </div>
+</ion-content>
