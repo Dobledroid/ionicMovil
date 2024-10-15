@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { NavController } from '@ionic/angular/standalone';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 import { IonicModule, ToastController } from '@ionic/angular';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { SessionService } from 'src/app/services/session.service';
 
@@ -21,22 +21,58 @@ export class AgregardireccionPage implements OnInit {
   apellidos: string = '';
   pais: string = 'México';
   codigoPostal: string = '43000';
-  estado: string = 'Hidalgo';
-  ciudad: string = 'Huejutla de Reyes';
+  estado: string = '';
+  ciudadSeleccionada: string = ''; // Ciudad seleccionada
+  ciudades: string[] = []; // Lista de ciudades obtenidas de la API
   colonia: string = '';
   direccion: string = '';
   telefono: string = '';
   referencias: string = '';
   predeterminado: boolean = true;
 
-  constructor(private toastController: ToastController,
+  constructor(
+    private toastController: ToastController,
     private navCtrl: NavController,
-    private sessionService: SessionService
+    private sessionService: SessionService,
+    private http: HttpClient
   ) {}
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  // Método para buscar información del código postal usando Zippopotamus
+  buscarPorCodigoPostal() {
+    if (this.codigoPostal) {
+      const url = `https://api.zippopotam.us/MX/${this.codigoPostal}`;
+
+      this.http.get(url).subscribe((data: any) => {
+        console.log('Datos recibidos de la API:', data);
+        if (data && data.places && data.places.length > 0) {
+          this.estado = data.places[0]['state'];
+          this.ciudades = data.places.map((place: any) => place['place name']); // Guardamos todas las ciudades
+          this.colonia = data.places[0]['state abbreviation']; // Puedes ajustar esto según el resultado que necesites
+        } else {
+          this.mostrarAlerta('Código Postal no encontrado.');
+        }
+      }, error => {
+        console.error('Error al consultar la API', error);
+        this.mostrarAlerta('Error al consultar el código postal.');
+      });
+    }
   }
 
+  // Método para mostrar alertas en caso de errores
+  async mostrarAlerta(mensaje: string) {
+    const alert = await this.toastController.create({
+      header: 'Error',
+      message: mensaje,
+      duration: 3000,
+      position: 'top',
+      color: 'warning'
+    });
+    await alert.present();
+  }
+
+  // Guardar dirección
   async guardarDireccion() {
     const user = await this.sessionService.get('user');
     if (!user || !user.ID_usuario) {
@@ -62,7 +98,7 @@ export class AgregardireccionPage implements OnInit {
           apellidos: this.apellidos,
           pais: this.pais,
           direccion: this.direccion,
-          ciudad: this.ciudad,
+          ciudad: this.ciudadSeleccionada, // Guardar la ciudad seleccionada
           colonia: this.colonia,
           estado: this.estado,
           codigoPostal: this.codigoPostal,
@@ -104,5 +140,4 @@ export class AgregardireccionPage implements OnInit {
   handleRegresar() {
     this.navCtrl.navigateRoot('/direcciones');
   }
-
 }

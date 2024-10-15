@@ -26,22 +26,25 @@
 
     <ion-item class="input-item">
       <ion-label position="floating" class="input-label">Código Postal *</ion-label>
-      <ion-input type="text" [(ngModel)]="codigoPostal" name="codigoPostal" required class="input-field"></ion-input>
+      <ion-input type="text" [(ngModel)]="codigoPostal" name="codigoPostal" (ionBlur)="buscarPorCodigoPostal()" required class="input-field"></ion-input>
     </ion-item>
 
     <ion-item class="input-item">
       <ion-label position="floating" class="input-label">Estado *</ion-label>
-      <ion-input type="text" [(ngModel)]="estado" name="estado" value="Hidalgo" required class="input-field"></ion-input>
+      <ion-input type="text" [(ngModel)]="estado" name="estado" readonly class="input-field"></ion-input>
     </ion-item>
 
     <ion-item class="input-item">
       <ion-label position="floating" class="input-label">Ciudad *</ion-label>
-      <ion-input type="text" [(ngModel)]="ciudad" name="ciudad" value="Huejutla de Reyes" required class="input-field"></ion-input>
+      <ion-select [(ngModel)]="ciudadSeleccionada" name="ciudadSeleccionada" required interface="popover">
+        <ion-select-option *ngFor="let ciudad of ciudades" [value]="ciudad">{{ ciudad }}</ion-select-option>
+      </ion-select>
     </ion-item>
 
+    <!-- Colonia (editable) -->
     <ion-item class="input-item">
       <ion-label position="floating" class="input-label">Colonia *</ion-label>
-      <ion-input type="text" [(ngModel)]="colonia" name="colonia" required class="input-field"></ion-input>
+      <ion-input type="text" [(ngModel)]="colonia" name="colonia" class="input-field"></ion-input>
     </ion-item>
 
     <ion-item class="input-item">
