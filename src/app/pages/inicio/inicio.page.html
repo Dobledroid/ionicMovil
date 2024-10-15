@@ -32,7 +32,12 @@
             <ion-card-title class="product-title">{{ producto.nombre }}</ion-card-title>
           </ion-card-header>
           <ion-card-content>
-            <p class="product-price">{{ producto.precioFinal | currency:'MXN':'symbol':'1.0-0' }}</p>
+            <p class="product-price">
+              {{ producto.precioFinal | currency: 'MXN':'symbol':'1.0-0' }}
+            </p>
+            <p class="product-price">
+              {{ producto.precioUSD | currency: 'USD':'symbol':'1.0-0' }}
+            </p>
           </ion-card-content>
         </ion-card>
       </ion-col>

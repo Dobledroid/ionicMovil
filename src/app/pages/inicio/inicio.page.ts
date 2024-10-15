@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 
 import { SessionService } from '../../services/session.service';
 import { environment } from 'src/environments/environment';
+import { CurrencyService } from 'src/app/services/currency.service';
 
 @Component({
   selector: 'app-inicio',
@@ -40,7 +41,8 @@ export class InicioPage implements OnInit {
 
   constructor(private sessionService: SessionService,
     private router: Router, private navCtrl: NavController,
-    private http: HttpClient
+    private http: HttpClient,
+    private currencyService: CurrencyService 
   ) {
     addIcons({});
   }
@@ -67,13 +69,15 @@ export class InicioPage implements OnInit {
     const apiUrl = `${environment.apiUrl}/list-products-imagenPrincipal-admin`; 
 
     this.http.get<any[]>(apiUrl).subscribe(
-      (response) => {
+      async (response) => {
         // console.log('Lista de productos:', response);
-        this.productos = response.map((producto) => ({
-          ...producto,
-          nombre: this.normalizeProductName(producto.nombre), 
-        }));
+        for (const producto of response) {
+          producto.nombre = this.normalizeProductName(producto.nombre);
+          producto.precioUSD = await this.convertirPrecio(producto.precioFinal);
+        }
+        this.productos = response;
         this.productosFiltrados = [...this.productos];
+        console.log(this.productosFiltrados)
         this.isLoading = false;
       },
       (error) => {
@@ -81,6 +85,15 @@ export class InicioPage implements OnInit {
         this.isLoading = false; 
       }
     );
+  }
+
+  async convertirPrecio(precioMXN: number): Promise<number> {
+    try {
+      return await this.currencyService.convertCurrency('MXN', 'USD', precioMXN);
+    } catch (error) {
+      console.error('Error al convertir moneda:', error);
+      return precioMXN; // Si hay error, mostrar el precio en MXN
+    }
   }
 
   normalizeProductName(name: string): string {
