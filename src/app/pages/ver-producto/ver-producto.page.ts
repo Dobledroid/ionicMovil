@@ -30,6 +30,7 @@ import { ToastController } from '@ionic/angular';
 import { environment } from 'src/environments/environment';
 import { FormsModule } from '@angular/forms';
 import { StarRatingComponent } from 'src/app/components/star-rating/star-rating.component';
+import { CurrencyService } from 'src/app/services/currency.service';
 
 @Component({
   selector: 'app-ver-producto',
@@ -70,13 +71,17 @@ export class VerProductoPage implements OnInit {
   isFavorite: boolean = false;
   idFavorito: number | null = null;
   sinStock: boolean = false;
+
+  currency: string = 'MXN'; 
+
   constructor(
     private route: ActivatedRoute,
     private http: HttpClient,
     private navCtrl: NavController,
     private sessionService: SessionService,
     private router: Router,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private currencyService: CurrencyService
   ) {
     addIcons({
       arrowBack,
@@ -92,6 +97,7 @@ export class VerProductoPage implements OnInit {
   }
 
   async ngOnInit() {
+    await this.obtenerUbicacionUsuario();
     this.route.queryParams.subscribe((params) => {
       const fullPreviousUrl = params['previousUrl'] || '/inicio';
       this.previousUrl = fullPreviousUrl.split('?')[0];
@@ -111,6 +117,19 @@ export class VerProductoPage implements OnInit {
         this.checkProductInCart(productId);
         this.checkIfFavorite(user.ID_usuario, productId);
       }
+    }
+  }
+
+  async obtenerUbicacionUsuario() {
+    try {
+      const response: any = await this.http.get('http://ip-api.com/json').toPromise();
+      console.log('Ubicación del usuario:', response);
+
+      if (response && response.countryCode) {
+        this.currency = response.countryCode === 'MX' ? 'MXN' : 'USD';
+      }
+    } catch (error) {
+      console.error('Error al obtener la ubicación del usuario:', error);
     }
   }
 
@@ -180,7 +199,7 @@ export class VerProductoPage implements OnInit {
     const apiUrl = `${environment.apiUrl}/products-with-imagensIonic/${id}`;
 
     this.http.get<any>(apiUrl).subscribe(
-      (response) => {
+      async (response) => {
         this.producto = response;
         // console.log('Detalles del producto:', this.producto);
         if (this.producto && this.producto.descripcion) {
@@ -196,6 +215,11 @@ export class VerProductoPage implements OnInit {
             alt: this.producto.nombre,
           })
         );
+        if (this.currency === 'USD') {
+          this.producto.precioConvertido = await this.convertirPrecio(this.producto.precioFinal);
+        } else {
+          this.producto.precioConvertido = this.producto.precioFinal;
+        }
         this.selectedImage = this.galleryImages[0]?.src;
         this.sinStock = this.producto.existencias <= 0;
         this.isLoading = false;
@@ -206,6 +230,15 @@ export class VerProductoPage implements OnInit {
         this.isLoading = false;
       }
     );
+  }
+
+  async convertirPrecio(precioMXN: number): Promise<number> {
+    try {
+      return await this.currencyService.convertCurrency('MXN', 'USD', precioMXN);
+    } catch (error) {
+      console.error('Error al convertir moneda:', error);
+      return precioMXN; // Retornar el precio original si falla la conversión
+    }
   }
 
   obtenerResenas(id: string) {

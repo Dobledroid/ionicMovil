@@ -27,7 +27,7 @@
         </ion-icon>
       </div>
       <p class="product-price">
-        {{ producto?.precioFinal | currency:'MXN':'symbol':'1.2-2' }}
+        {{ producto?.precioConvertido | currency: currency:'symbol':'1.2-2' }}
       </p>
       <div *ngIf="sinStock" class="out-of-stock-message">
         <p>Producto fuera de stock</p>

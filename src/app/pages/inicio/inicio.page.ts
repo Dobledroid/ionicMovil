@@ -31,6 +31,7 @@ export class InicioPage implements OnInit {
   productosFiltrados: any[] = [];
   valorBusqueda: string = '';
   isLoading: boolean = true;
+  currency: string = 'MXN'; 
 
   categorias = [
     { ID_categoria: 1, nombre: 'Suplementos', imagenUrl: 'assets/img/categorias/vitaminas.png' },
@@ -55,8 +56,23 @@ export class InicioPage implements OnInit {
       console.log(userData)
       this.nombreUsuario = userData.correoElectronico;
     }
-
+    await this.obtenerUbicacionUsuario();
     this.getProducts();
+  }
+
+
+  async obtenerUbicacionUsuario() {
+    try {
+      const response: any = await this.http.get('http://ip-api.com/json').toPromise();
+      console.log('Ubicación del usuario:', response);
+
+      if (response && response.countryCode) {
+        // Cambiar moneda según país detectado
+        this.currency = response.countryCode === 'MX' ? 'MXN' : 'USD';
+      }
+    } catch (error) {
+      console.error('Error al obtener la ubicación del usuario:', error);
+    }
   }
 
   verCategoria(categoria: any) {
@@ -71,9 +87,14 @@ export class InicioPage implements OnInit {
     this.http.get<any[]>(apiUrl).subscribe(
       async (response) => {
         // console.log('Lista de productos:', response);
+        console.log(this.currency)
         for (const producto of response) {
           producto.nombre = this.normalizeProductName(producto.nombre);
-          producto.precioUSD = await this.convertirPrecio(producto.precioFinal);
+          if (this.currency === 'USD') {
+            producto.precioConvertido = await this.convertirPrecio(producto.precioFinal);
+          } else {
+            producto.precioConvertido = producto.precioFinal; // Usar precio en MXN si aplica
+          }
         }
         this.productos = response;
         this.productosFiltrados = [...this.productos];
