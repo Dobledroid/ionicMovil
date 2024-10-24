@@ -37,8 +37,10 @@ export class AgregardireccionPage implements OnInit {
     private http: HttpClient
   ) {}
 
-  ngOnInit() {}
-
+  ngOnInit() {
+    this.buscarPorCodigoPostal(); // Ejecutar búsqueda automáticamente al cargar la pantalla
+  }
+  
   // Método para buscar información del código postal usando Zippopotamus
   buscarPorCodigoPostal() {
     if (this.codigoPostal) {
@@ -49,8 +51,8 @@ export class AgregardireccionPage implements OnInit {
         if (data && data.places && data.places.length > 0) {
           this.estado = data.places[0]['state'];
           this.ciudades = data.places.map((place: any) => place['place name']); // Guardamos todas las ciudades
-          this.colonia = data.places[0]['state abbreviation']; // Puedes ajustar esto según el resultado que necesites
-        } else {
+          this.colonia = '';
+                } else {
           this.mostrarAlerta('Código Postal no encontrado.');
         }
       }, error => {
