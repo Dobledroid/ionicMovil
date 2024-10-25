@@ -32,7 +32,7 @@
       <div *ngIf="sinStock" class="out-of-stock-message">
         <p>Producto fuera de stock</p>
       </div>
-      <div  *ngIf="!sinStock" class="bordered-container-pr">
+      <div *ngIf="!sinStock" class="bordered-container-pr">
         <ion-label class="quantity-label-pr">Cantidad:</ion-label>
         <div class="quantity-controls-pr">
           <ion-icon name="remove" class="quantity-icon-pr" (click)="disminuirCantidadPr()"></ion-icon>
@@ -40,12 +40,9 @@
             class="quantity-input-pr">
           <ion-icon name="add" class="quantity-icon-pr" (click)="aumentarCantidadPr()"></ion-icon>
         </div>
-        <ion-icon 
-        [name]="isFavorite ? 'heart' : 'heart-outline'" 
-        class="favorite-icon-pr" 
-        (click)="toggleFavorite()"
-        [ngClass]="{ 'favorite-active': isFavorite }">
-      </ion-icon>
+        <!-- <ion-icon [name]="isFavorite ? 'heart' : 'heart-outline'" class="favorite-icon-pr" (click)="toggleFavorite()"
+          [ngClass]="{ 'favorite-active': isFavorite }">
+        </ion-icon> -->
       </div>
     </div>
 
@@ -89,7 +86,8 @@
 
             <!-- Textarea para escribir nueva reseña -->
             <div *ngIf="usuario; else noSesionResena">
-              <ion-label position="floating" style="font-weight: 600; color: #333; margin-top: 50px;">Escribe tu reseña</ion-label>
+              <ion-label position="floating" style="font-weight: 600; color: #333; margin-top: 50px;">Escribe tu
+                reseña</ion-label>
               <ion-textarea [(ngModel)]="comentario" required
                 style="--padding-start: 15px; --padding-end: 15px; font-size: 1rem; border-radius: 8px; border: 1px solid #ccc;">
               </ion-textarea>
@@ -97,7 +95,7 @@
                 <app-star-rating [(rating)]="calificacion" [maxRating]="5"
                   (ratingChange)="onRatingChange($event)"></app-star-rating>
               </div>
-            
+
               <!-- Botón para enviar la reseña -->
               <ion-button expand="block" (click)="enviarResena()" [disabled]="comentario.trim().length === 0"
                 style="margin-top: 15px;" color="dark">
@@ -107,7 +105,7 @@
             <ng-template #noSesionResena>
               <p class="no-sesion-message">Debes iniciar sesión para dejar una reseña.</p>
             </ng-template>
-            
+
 
           </ion-card-content>
         </ion-card>
@@ -140,5 +138,5 @@
   <ng-template #noSesion>
     <p class="no-sesion-message">Debes iniciar sesión para añadir al carrito.</p>
   </ng-template>
-  
+
 </ion-footer>
