@@ -8,6 +8,7 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="ion-padding">
+  <ion-loading *ngIf="isLoading" [isOpen]="isLoading" message="Cargando..." spinner="dots"></ion-loading>
   <form (ngSubmit)="guardarDireccion()" #direccionForm="ngForm" class="direccion-form">
     <ion-item class="input-item">
       <ion-label position="floating" class="input-label">Nombre *</ion-label>

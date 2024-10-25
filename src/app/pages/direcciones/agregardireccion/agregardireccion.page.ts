@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NavController } from '@ionic/angular/standalone';
 import { HeaderComponent } from 'src/app/components/header/header.component';
-import { IonicModule, ToastController } from '@ionic/angular';
+import { IonicModule, LoadingController, ToastController } from '@ionic/angular';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { SessionService } from 'src/app/services/session.service';
@@ -29,26 +29,28 @@ export class AgregardireccionPage implements OnInit {
   telefono: string = '';
   referencias: string = '';
   predeterminado: boolean = true;
+  isLoading = false;
 
   constructor(
     private toastController: ToastController,
     private navCtrl: NavController,
     private sessionService: SessionService,
-    private http: HttpClient
+    private http: HttpClient,
+    private loadingController: LoadingController
   ) {}
 
   ngOnInit() {
     this.buscarPorCodigoPostal(); // Ejecutar búsqueda automáticamente al cargar la pantalla
   }
   
-  // Método para buscar información del código postal usando Zippopotamus
   buscarPorCodigoPostal() {
     if (this.codigoPostal) {
+      this.isLoading = true;
       const url = `https://api.zippopotam.us/MX/${this.codigoPostal}`;
 
       this.http.get(url).subscribe((data: any) => {
-        console.log('Datos recibidos de la API:', data);
         if (data && data.places && data.places.length > 0) {
+          this.isLoading = false;
           this.estado = data.places[0]['state'];
           this.ciudades = data.places.map((place: any) => place['place name']); // Guardamos todas las ciudades
           this.colonia = '';
@@ -56,6 +58,7 @@ export class AgregardireccionPage implements OnInit {
           this.mostrarAlerta('Código Postal no encontrado.');
         }
       }, error => {
+        this.isLoading = false;
         console.error('Error al consultar la API', error);
         this.mostrarAlerta('Error al consultar el código postal.');
       });
@@ -76,8 +79,10 @@ export class AgregardireccionPage implements OnInit {
 
   // Guardar dirección
   async guardarDireccion() {
+    this.isLoading = true;
     const user = await this.sessionService.get('user');
     if (!user || !user.ID_usuario) {
+      this.isLoading = false;
       const toast = await this.toastController.create({
         message: 'Usuario no autenticado. Por favor, inicie sesión para continuar.',
         duration: 3000,
@@ -109,7 +114,7 @@ export class AgregardireccionPage implements OnInit {
           predeterminado: this.predeterminado,
         }),
       });
-
+      this.isLoading = false;
       if (response.ok) {
         const successToast = await this.toastController.create({
           message: 'Dirección de envío guardada exitosamente.',
@@ -129,6 +134,7 @@ export class AgregardireccionPage implements OnInit {
         await errorToast.present();
       }
     } catch (error) {
+      this.isLoading = false;
       const networkErrorToast = await this.toastController.create({
         message: 'Error al guardar la dirección de envío. Por favor, intenta nuevamente.',
         duration: 3000,
