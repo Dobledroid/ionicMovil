@@ -63,7 +63,7 @@ export class DireccionesPage implements OnInit {
       const response = await this.http.get(`${environment.apiUrl}/direccion-envio-user/${userId}`).toPromise();
       if (response) {
         this.direcciones = response as any[];
-        console.log('Direcciones del usuario:', this.direcciones);
+        // console.log('Direcciones del usuario:', this.direcciones);
       } else {
         console.error('Error al cargar las direcciones guardadas');
       }

@@ -33,7 +33,7 @@ export class PerfilPage implements OnInit {
     private sessionService: SessionService,
     private toastController: ToastController,
     private http: HttpClient
-  ) { 
+  ) {
       this.userForm = this.fb.group({
         nombre: [''],
         primerApellido: [''],
@@ -57,14 +57,14 @@ export class PerfilPage implements OnInit {
     }
   }
 
-  
+
   async fetchUserData(userId: number) {
     const apiUrl = `${environment.apiUrl}/users/${userId}`;
     try {
       const response: any = await this.http.get(apiUrl).toPromise();
       if (response) {
         this.userForm.patchValue(response);
-        console.log('Datos del usuario:', response);
+        // console.log('Datos del usuario:', response);
       } else {
         console.error('Error al cargar la información del usuario');
       }
@@ -79,15 +79,14 @@ export class PerfilPage implements OnInit {
 
   async guardarInformacion() {
     if (this.userForm.valid) {
-      console.log('Datos del formulario para guardar:', this.userForm.value);
-  
+      // console.log('Datos del formulario para guardar:', this.userForm.value);
+
       const apiUrl = `${environment.apiUrl}/users-ionic/${this.userId}`;
       const formData = this.userForm.value;
-  
+
       try {
         const response = await this.http.put(apiUrl, formData).toPromise();
-        console.log('Respuesta del servidor:', response);
-        // Mostrar un mensaje indicando que la información se guardó correctamente
+        // console.log('Respuesta del servidor:', response);
         this.mostrarToast('Información guardada correctamente.', 'success');
       } catch (error) {
         console.error('Error al guardar la información del usuario:', error);
@@ -108,5 +107,5 @@ export class PerfilPage implements OnInit {
     await toast.present();
   }
 
-  
+
 }

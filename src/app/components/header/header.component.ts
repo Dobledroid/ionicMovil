@@ -7,6 +7,7 @@ import { heart, cart, car } from 'ionicons/icons';
 import { SessionService } from 'src/app/services/session.service';
 import { environment } from 'src/environments/environment';
 
+import { HeaderService } from 'src/app/services/header.service';
 @Component({
   selector: 'app-header',
   standalone: true,
@@ -25,14 +26,27 @@ export class HeaderComponent implements OnInit {
   constructor(
     private navCtrl: NavController,
     private http: HttpClient,
-    private sessionService: SessionService
+    private sessionService: SessionService,
+    private headerService: HeaderService
   ) {
     addIcons({ heart, cart });
   }
 
   async ngOnInit() {
-    await this.fetchTotalProductosEnCarrito();
-    await this.fetchCantidadFavoritos();
+    this.headerService.totalProductosEnCarrito$.subscribe((total) => {
+      this.totalProductosEnCarrito = total;
+    });
+
+    this.headerService.cantidadFavoritos$.subscribe((cantidad) => {
+      this.cantidadFavoritos = cantidad;
+    });
+
+    this.headerService.totalPrecio$.subscribe((total) => {
+      this.totalPrecio = total;
+    });
+
+    await this.headerService.fetchTotalProductosEnCarrito();
+    await this.headerService.fetchCantidadFavoritos();
   }
 
   abrirCarrito() {
@@ -43,60 +57,4 @@ export class HeaderComponent implements OnInit {
     this.navCtrl.navigateForward('/favoritos');
   }
 
-  async fetchTotalProductosEnCarrito() {
-    try {
-      // Recuperar el ID del usuario del Storage
-      const user = await this.sessionService.get('user');
-      const userId = user?.ID_usuario || null; // Colocar null si no existe
-
-      if (userId) {
-        const response = await this.http
-          .get<{ totalProductosEnCarrito: number; totalPrecio: number }>(
-            `${environment.apiUrl}/carrito-compras-total-usuario/${userId}`
-          )
-          .toPromise();
-
-        if (response) {
-          this.totalProductosEnCarrito = response.totalProductosEnCarrito;
-          this.totalPrecio = response.totalPrecio;
-          // console.log('total, ', this.totalProductosEnCarrito);
-        } else {
-          console.error(
-            'Error al obtener la cantidad total de productos en el carrito'
-          );
-        }
-      } else {
-        // console.log('Usuario no autenticado, no se puede obtener el total de productos en el carrito.');
-      }
-    } catch (error) {
-      console.error('Error de red:', error);
-    }
-  }
-
-  async fetchCantidadFavoritos() {
-    try {
-      // Recuperar el ID del usuario del Storage
-      const user = await this.sessionService.get('user');
-      const userId = user?.ID_usuario || null; // Colocar null si no existe
-
-      if (userId) {
-        const response = await this.http
-          .get<{ cantidad: number }>(
-            `${environment.apiUrl}/favoritos-cantidad/${userId}`
-          )
-          .toPromise();
-
-        if (response) {
-          this.cantidadFavoritos = response.cantidad;
-          // console.log('cantidadF, ', this.cantidadFavoritos);
-        } else {
-          console.error('Error al obtener la cantidad de favoritos');
-        }
-      } else {
-        
-      }
-    } catch (error) {
-      console.error('Error de red:', error);
-    }
-  }
 }

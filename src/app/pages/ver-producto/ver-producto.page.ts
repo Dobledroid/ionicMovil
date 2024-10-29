@@ -31,6 +31,7 @@ import { environment } from 'src/environments/environment';
 import { FormsModule } from '@angular/forms';
 import { StarRatingComponent } from 'src/app/components/star-rating/star-rating.component';
 import { CurrencyService } from 'src/app/services/currency.service';
+import { HeaderService } from 'src/app/services/header.service';
 
 @Component({
   selector: 'app-ver-producto',
@@ -72,7 +73,7 @@ export class VerProductoPage implements OnInit {
   idFavorito: number | null = null;
   sinStock: boolean = false;
 
-  currency: string = 'MXN'; 
+  currency: string = 'MXN';
 
   constructor(
     private route: ActivatedRoute,
@@ -81,7 +82,8 @@ export class VerProductoPage implements OnInit {
     private sessionService: SessionService,
     private router: Router,
     private toastController: ToastController,
-    private currencyService: CurrencyService
+    private currencyService: CurrencyService,
+    private headerService: HeaderService
   ) {
     addIcons({
       arrowBack,
@@ -122,8 +124,10 @@ export class VerProductoPage implements OnInit {
 
   async obtenerUbicacionUsuario() {
     try {
-      const response: any = await this.http.get('http://ip-api.com/json').toPromise();
-      console.log('Ubicación del usuario:', response);
+      const response: any = await this.http
+        .get('http://ip-api.com/json')
+        .toPromise();
+      // console.log('Ubicación del usuario:', response);
 
       if (response && response.countryCode) {
         this.currency = response.countryCode === 'MX' ? 'MXN' : 'USD';
@@ -208,7 +212,6 @@ export class VerProductoPage implements OnInit {
           );
         }
         this.productoId = this.producto.ID_producto;
-        // Asignar las imágenes al arreglo de la galería
         this.galleryImages = this.producto.imagenes.map(
           (imagenUrl: string) => ({
             src: imagenUrl,
@@ -216,7 +219,9 @@ export class VerProductoPage implements OnInit {
           })
         );
         if (this.currency === 'USD') {
-          this.producto.precioConvertido = await this.convertirPrecio(this.producto.precioFinal);
+          this.producto.precioConvertido = await this.convertirPrecio(
+            this.producto.precioFinal
+          );
         } else {
           this.producto.precioConvertido = this.producto.precioFinal;
         }
@@ -234,7 +239,11 @@ export class VerProductoPage implements OnInit {
 
   async convertirPrecio(precioMXN: number): Promise<number> {
     try {
-      return await this.currencyService.convertCurrency('MXN', 'USD', precioMXN);
+      return await this.currencyService.convertCurrency(
+        'MXN',
+        'USD',
+        precioMXN
+      );
     } catch (error) {
       console.error('Error al convertir moneda:', error);
       return precioMXN; // Retornar el precio original si falla la conversión
@@ -253,7 +262,6 @@ export class VerProductoPage implements OnInit {
     const user = await this.sessionService.get('user');
 
     if (!user) {
-      // Mostrar mensaje de advertencia y redirigir según la respuesta del usuario
       const toast = await this.toastController.create({
         message: 'Por favor, inicia sesión para dejar una reseña.',
         duration: 3000,
@@ -262,13 +270,13 @@ export class VerProductoPage implements OnInit {
           {
             text: 'Iniciar sesión',
             handler: () => {
-              this.navCtrl.navigateForward('/iniciar-sesion'); // Redirigir a la página de inicio de sesión
+              this.navCtrl.navigateForward('/iniciar-sesion'); 
             },
           },
           {
             text: 'Registrarse',
             handler: () => {
-              this.navCtrl.navigateForward('/registrarse'); // Redirigir a la página de registro
+              this.navCtrl.navigateForward('/registrarse'); 
             },
           },
         ],
@@ -277,7 +285,6 @@ export class VerProductoPage implements OnInit {
       return;
     }
 
-    // Validar si el comentario tiene contenido
     if (!this.comentario || this.comentario.trim() === '') {
       const toast = await this.toastController.create({
         message: 'Por favor, escribe un comentario antes de enviarlo.',
@@ -320,11 +327,10 @@ export class VerProductoPage implements OnInit {
           color: 'success',
         });
         await successToast.present();
-        // Resetear el comentario y la calificación
         this.comentario = '';
         this.calificacion = 0;
         // Actualizar la lista de reseñas
-        console.log('id mandando', this.productoId);
+        // console.log('id mandando', this.productoId);
         this.obtenerResenas(this.productoId);
       } else {
         const errorToast = await this.toastController.create({
@@ -446,21 +452,17 @@ export class VerProductoPage implements OnInit {
   }
 
   async agregarAlCarrito() {
-    // Obtener datos del usuario del storage
     if (!this.usuario) {
-      // Redirigir a iniciar sesión si el usuario no está autenticado
       this.navCtrl.navigateRoot('/iniciar-sesion');
       return;
     }
 
-    // Endpoint para validar si el producto ya está en el carrito
     const apiUrlExiste = `${environment.apiUrl}/carrito-compras-existe-prod/${this.usuario.ID_usuario}/${this.producto.ID_producto}`;
 
     this.http.get<any>(apiUrlExiste).subscribe(
-      (response) => {
-        console.log('response', response);
+      async (response) => {
+        // console.log('response', response);
         if (response && response.existeRegistro === false) {
-          // Si el producto no está en el carrito, agregarlo
           this.agregarProductoCarrito(
             this.usuario.ID_usuario,
             this.producto.ID_producto,
@@ -468,7 +470,6 @@ export class VerProductoPage implements OnInit {
           );
           this.productoEnCarrito = true;
         } else if (response && response.existeRegistro === true) {
-          // Si el producto ya está en el carrito, actualizar la cantidad
           this.actualizarCantidadProducto(
             response.ID_carrito,
             response.cantidad + this.cantidad
@@ -515,6 +516,7 @@ export class VerProductoPage implements OnInit {
         });
         await errorToast.present();
       }
+      await this.headerService.fetchTotalProductosEnCarrito();
     } catch (error) {
       console.error(
         'Error al actualizar la cantidad del producto en el carrito:',
@@ -531,12 +533,12 @@ export class VerProductoPage implements OnInit {
     }
   }
 
-  agregarProductoCarrito(
+  async agregarProductoCarrito(
     ID_usuario: number,
     ID_producto: number,
     cantidad: number
   ) {
-    console.log(ID_usuario, ID_producto, cantidad);
+    // console.log(ID_usuario, ID_producto, cantidad);
     const apiUrl = `${environment.apiUrl}/carrito-compras`;
     const body = {
       ID_usuario: ID_usuario,
@@ -553,7 +555,9 @@ export class VerProductoPage implements OnInit {
           color: 'success',
         });
         await successToast.present();
+        await this.headerService.fetchTotalProductosEnCarrito();
       },
+
       async (error) => {
         console.error('Error al agregar el producto al carrito:', error);
         const errorToast = await this.toastController.create({
@@ -681,6 +685,7 @@ export class VerProductoPage implements OnInit {
           console.error('Error al agregar el producto a favoritos');
         }
       }
+      await this.headerService.fetchCantidadFavoritos();
     } catch (error) {
       console.error('Error de red:', error);
     }

@@ -33,17 +33,18 @@ export class ProductosPage implements OnInit {
   ngOnInit() {
     const categoriaId = this.route.snapshot.paramMap.get('ID_categoria');
     this.nombreCategoria = this.route.snapshot.queryParamMap.get('nombre') || 'Productos';
-    // console.log('ID de la categoría seleccionada:', categoriaId);
+    console.log('ID de la categoría seleccionada:', categoriaId);
     if (categoriaId) {
       this.getProductosPorCategoria(categoriaId);
     }
   }
 
   getProductosPorCategoria(categoriaId: string) {
-    const apiUrl = `${environment.apiUrl}/list-products-by-category-ionic/${categoriaId}`;
+    // const apiUrl = `${environment.apiUrl}/list-products-by-category-ionic/${categoriaId}`;
+    const apiUrl = `http://localhost:4000/api/list-products-by-category-ionic/${categoriaId}`;
     this.http.get<any[]>(apiUrl).subscribe(
       (response) => {
-        // console.log('Productos de la categoría:', response);
+        console.log('Productos de la categoría:', response);
         this.productos = response;
         this.productosFiltrados = [...this.productos];
         this.isLoading = false;

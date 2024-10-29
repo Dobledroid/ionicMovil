@@ -43,7 +43,7 @@ export class InicioPage implements OnInit {
   constructor(private sessionService: SessionService,
     private router: Router, private navCtrl: NavController,
     private http: HttpClient,
-    private currencyService: CurrencyService 
+    private currencyService: CurrencyService,
   ) {
     addIcons({});
   }
@@ -53,18 +53,19 @@ export class InicioPage implements OnInit {
 
     if (this.sesionActiva) {
       const userData = await this.sessionService.get('user');
-      console.log(userData)
+      // console.log(userData)
       this.nombreUsuario = userData.correoElectronico;
     }
     await this.obtenerUbicacionUsuario();
     this.getProducts();
+
   }
 
 
   async obtenerUbicacionUsuario() {
     try {
       const response: any = await this.http.get('http://ip-api.com/json').toPromise();
-      console.log('Ubicación del usuario:', response);
+      // console.log('Ubicación del usuario:', response);
 
       if (response && response.countryCode) {
         // Cambiar moneda según país detectado
@@ -87,7 +88,7 @@ export class InicioPage implements OnInit {
     this.http.get<any[]>(apiUrl).subscribe(
       async (response) => {
         // console.log('Lista de productos:', response);
-        console.log(this.currency)
+        // console.log(this.currency)
         for (const producto of response) {
           producto.nombre = this.normalizeProductName(producto.nombre);
           if (this.currency === 'USD') {
@@ -98,7 +99,7 @@ export class InicioPage implements OnInit {
         }
         this.productos = response;
         this.productosFiltrados = [...this.productos];
-        console.log(this.productosFiltrados)
+        // console.log(this.productosFiltrados)
         this.isLoading = false;
       },
       (error) => {

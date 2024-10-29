@@ -24,15 +24,13 @@
 
   <ion-list *ngIf="!isLoading && direcciones.length > 0">
     <ion-item *ngFor="let direccion of direcciones" class="direccion-item">
-      <!-- Ícono de dirección predeterminada -->
       <ion-icon
         slot="start"
-        [name]="direccion.predeterminado ? 'checkmark-circle' : 'ellipse-outline'"
+        [name]="direccion.predeterminado ? 'checkmark-circle' : ''"
         [style.color]="direccion.predeterminado ? 'green' : 'gray'"
         class="predeterminado-icon">
       </ion-icon>
 
-      <!-- Contenido de la dirección -->
       <ion-label>
         <h2 class="nunito-font">{{ direccion.nombre }} {{ direccion.apellidos }}</h2>
         <p class="nunito-font">{{ direccion.direccion }}, {{ direccion.colonia }}, {{ direccion.ciudad }}, {{ direccion.estado }}</p>
@@ -40,7 +38,6 @@
         <p class="nunito-font">Teléfono: {{ direccion.telefono }}</p>
       </ion-label>
 
-      <!-- Menú de opciones con tres puntos -->
       <ion-buttons slot="end">
         <ion-button (click)="openOptionsPopover($event, direccion)">
           <ion-icon name="ellipsis-vertical"></ion-icon>

@@ -43,9 +43,8 @@ export class CuentaPage implements OnInit {
     }
 
  async ngOnInit() {
-    // Obtener el nombre del usuario desde la sesión
     const userData = await this.sessionService.get('user');
-    console.log(userData)
+    // console.log(userData)
     if (userData && userData.correoElectronico) {
       this.ID_usuario = userData.ID_usuario;
       this.nombreUsuario = userData.correoElectronico;
@@ -57,17 +56,15 @@ export class CuentaPage implements OnInit {
     this.http.get<any>(`${environment.apiUrl}/user-image/${this.ID_usuario}`)
       .subscribe(
         (response) => {
-          console.log(response)
+          // console.log(response)
           this.imagenUsuario = response.imagenUrl || this.defaultImagen;
           this.isLoading = false; 
         },
         (error) => {
-          // Si la respuesta es un 404 (usuario sin imagen), asignamos la imagen por defecto, sin mostrar error
           if (error.status === 404) {
             this.imagenUsuario = this.defaultImagen;
           
           } else {
-            // Aquí podrías manejar otros errores, si es necesario
             console.error('Error inesperado al obtener la imagen del usuario:', error);
             this.imagenUsuario = this.defaultImagen;
           }
@@ -82,22 +79,19 @@ export class CuentaPage implements OnInit {
 
    onFileSelected(event: any) {
     const file = event.target.files[0];
-    console.log(file)
+    // console.log(file)
     if (file) {
-      // Subir la imagen antes de asignarla a `selectedFile`
       this.subirImagen(file)
         .then((response) => {
-          // Si la subida fue exitosa, asigna el archivo y previsualízalo
           this.selectedFile = file;
   
           const reader = new FileReader();
           reader.onload = (e: any) => {
-            this.imagenUsuario = e.target.result; // Previsualiza la imagen seleccionada
+            this.imagenUsuario = e.target.result; 
           };
           reader.readAsDataURL(file);
         })
         .catch((error) => {
-          // Si hay un error, no hagas nada con el archivo ni lo previsualices
           console.error('Error al subir la imagen:', error);
           alert('Hubo un error al subir la imagen. Inténtalo nuevamente.');
         });
@@ -105,21 +99,20 @@ export class CuentaPage implements OnInit {
   }
 
 
-  // Subir la imagen al backend
   subirImagen(file: File): Promise<any> {
     return new Promise(async (resolve, reject) => {
       const formData = new FormData();
       formData.append('imagen', file);
       formData.append('ID_usuario', this.ID_usuario.toString()); // Reemplazar con el ID del usuario real
   
-      formData.forEach((value, key) => {
-        console.log(`${key}:`, value);
-      });
+      // formData.forEach((value, key) => {
+      //   console.log(`${key}:`, value);
+      // });
   
       this.http.post(`${environment.apiUrl}/upload-user-image`, formData)
         .subscribe(
           async (response: any) => {
-            console.log('Imagen subida correctamente:', response);
+            // console.log('Imagen subida correctamente:', response);
             this.imagenUsuario = response.imagenUrl; // Actualizar la URL de la imagen
   
             const successToast = await this.toastController.create({
@@ -130,7 +123,7 @@ export class CuentaPage implements OnInit {
             });
             await successToast.present();
   
-            resolve(response); // Resolución exitosa
+            resolve(response); 
           },
           async (error) => {
             const errorToast = await this.toastController.create({
@@ -142,7 +135,7 @@ export class CuentaPage implements OnInit {
             await errorToast.present();
             console.error('Error al subir la imagen:', error);
   
-            reject(error); // Rechazar en caso de error
+            reject(error); 
           }
         );
     });
@@ -160,12 +153,10 @@ export class CuentaPage implements OnInit {
     this.router.navigate(['/compras']);
   }
 
-  // Navegar a la página de Mis Direcciones
   goToMisDirecciones() {
     this.router.navigate(['/direcciones']);
   }
 
-  // Cerrar sesión
   async cerrarSesion() {
     const alert = await this.alertController.create({
       header: 'Cerrar Sesión',
@@ -194,5 +185,4 @@ export class CuentaPage implements OnInit {
   goToRegistrarse() {
     this.router.navigate(['/registro']);
   }
-
 }

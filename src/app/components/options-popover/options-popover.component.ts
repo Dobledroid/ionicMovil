@@ -3,12 +3,13 @@ import { IonicModule, NavController, ToastController } from '@ionic/angular';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { SessionService } from 'src/app/services/session.service';
+import { PopoverController } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-options-popover',
   templateUrl: './options-popover.component.html',
   styleUrls: ['./options-popover.component.scss'],
-  standalone: true, // Aquí hacemos que el componente sea standalone
+  standalone: true, 
   imports: [HttpClientModule, IonicModule]
 })
 export class OptionsPopoverComponent {
@@ -18,7 +19,8 @@ export class OptionsPopoverComponent {
     private toastController: ToastController,
     private http: HttpClient,
     private navCtrl: NavController,
-    private sessionService: SessionService
+    private sessionService: SessionService,
+    private popoverController: PopoverController
   ) {}
 
   async establecerComoPredeterminado() {
@@ -54,9 +56,7 @@ export class OptionsPopoverComponent {
         color: 'success'
       });
       await successToast.present();
-      this.navCtrl.pop(); // Cierra el popover después de establecer como predeterminado
-  
-      // Emitir evento o actualizar la lista de direcciones si es necesario
+      await this.popoverController.dismiss();
       this.direccionEliminada.emit();
     } catch (error) {
       const errorToast = await this.toastController.create({
@@ -81,8 +81,8 @@ export class OptionsPopoverComponent {
           color: 'success'
         });
         await toast.present();
-        this.direccionEliminada.emit(); // Emitir evento al eliminar la dirección
-        this.navCtrl.pop(); // Cierra el popover
+        this.direccionEliminada.emit(); 
+        await this.popoverController.dismiss();
       }
     } catch (error) {
       const errorToast = await this.toastController.create({

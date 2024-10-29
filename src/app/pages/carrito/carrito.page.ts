@@ -1,13 +1,14 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { IonicModule, NavController } from '@ionic/angular';
+import { IonicModule, NavController, ToastController } from '@ionic/angular';
 import { SessionService } from 'src/app/services/session.service';
 import { environment } from 'src/environments/environment';
 import { addIcons } from 'ionicons';
 import { remove, add, trash }  from 'ionicons/icons';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 import { AlertController } from '@ionic/angular/standalone';
+import { HeaderService } from 'src/app/services/header.service';
 
 @Component({
   selector: 'app-carrito',
@@ -23,7 +24,9 @@ export class CarritoPage implements OnInit {
   isLoading: boolean = true; 
   puedePagar: boolean = true;
   constructor(private http: HttpClient, private sessionService: SessionService,
-    private navCtrl: NavController,  private alertController: AlertController
+    private navCtrl: NavController,  private alertController: AlertController, 
+    private toastController: ToastController,
+    private headerService: HeaderService
   ) {
     addIcons({remove, add, trash });
   }
@@ -51,7 +54,7 @@ export class CarritoPage implements OnInit {
       (response) => {
         this.carritoProductos = response;
         this.validarExistencias(); 
-        console.log('Productos del carrito:', this.carritoProductos);
+        // console.log('Productos del carrito:', this.carritoProductos);
         this.isLoading = false;
       },
       (error) => {
@@ -70,15 +73,14 @@ export class CarritoPage implements OnInit {
           const { existencias } = response;
 
           if (producto.cantidad > existencias) {
-            producto.sinStock = true; // Añadir una propiedad para indicar que hay falta de stock
-            this.puedePagar = false; // No se puede proceder al pago si algún producto no tiene suficiente stock
+            producto.sinStock = true; 
+            this.puedePagar = false; 
 
-            this.mostrarToast(`El producto "${producto.nombre}" no tiene suficiente stock. Existencias disponibles: ${existencias}.`);
+            this.mostrarToast(`El producto "${producto.nombre}" no tiene suficiente stock. Existencias disponibles: ${existencias}.`, 'danger');
 
-            // Ajustar la cantidad en el carrito a las existencias disponibles
             producto.cantidad = existencias;
           } else {
-            producto.sinStock = false; // Producto con suficiente stock
+            producto.sinStock = false;
           }
         },
         (error) => {
@@ -86,15 +88,6 @@ export class CarritoPage implements OnInit {
         }
       );
     });
-  }
-
-  async mostrarToast(message: string) {
-    const toast = await this.alertController.create({
-      header: 'Advertencia',
-      message: message,
-      buttons: ['OK'],
-    });
-    await toast.present();
   }
 
   aumentarCantidad(producto: any) {
@@ -127,9 +120,10 @@ export class CarritoPage implements OnInit {
       });
   
       if (response.ok) {
-        console.log('Cantidad del producto actualizada en el carrito:', await response.json());
+        // console.log('Cantidad del producto actualizada en el carrito:', await response.json());
         // Mostrar una alerta indicando que el producto se ha actualizado
         this.validarExistencias();
+        await this.headerService.fetchTotalProductosEnCarrito();
       } else {
         console.error('Error al actualizar la cantidad del producto en el carrito:', response.statusText);
       }
@@ -170,13 +164,29 @@ export class CarritoPage implements OnInit {
   async eliminarProducto(ID_carrito: number) {
     const apiUrl = `${environment.apiUrl}/carrito-compras/${ID_carrito}`;
     try {
-      const response = await this.http.delete(apiUrl).toPromise();
-      if (response) {
+      const response: any = await this.http.delete(apiUrl, { observe: 'response' }).toPromise(); 
+
+      if (response.status === 204) { 
         this.cargarCarrito(this.usuario.ID_usuario);
+        await this.headerService.fetchTotalProductosEnCarrito();
+        await this.mostrarToast('Producto eliminado correctamente del carrito.', 'success');
+      } else {
+        await this.mostrarToast('Error al eliminar el producto del carrito.', 'danger');
       }
     } catch (error) {
       console.error('Error al eliminar el producto del carrito:', error);
+      await this.mostrarToast('Error al eliminar el producto del carrito. Inténtalo de nuevo.', 'danger');
     }
+  }
+
+  async mostrarToast(message: string, color: 'success' | 'danger') {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 3000,
+      position: 'top',
+      color: color,
+    });
+    await toast.present();
   }
 
 }
