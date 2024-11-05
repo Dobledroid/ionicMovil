@@ -137,6 +137,10 @@ export class VerProductoPage implements OnInit {
     }
   }
 
+  esNombreLargo(nombre: string): boolean {
+    return nombre.length > 50;
+  }
+
   toggleTitle() {
     this.isTitleExpanded = !this.isTitleExpanded;
   }

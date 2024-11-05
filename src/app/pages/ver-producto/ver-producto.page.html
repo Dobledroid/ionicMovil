@@ -20,10 +20,16 @@
     <!-- Sección del nombre del producto, precio y contenedor -->
     <div class="product-info-container">
       <div class="title-container">
-        <h6 class="product-title">{{ isTitleExpanded ? producto?.nombre : (producto?.nombre | slice:0:50) + '...' }}
+        <h6 class="product-title">
+          {{ isTitleExpanded || !esNombreLargo(producto?.nombre) ? producto?.nombre : (producto?.nombre | slice:0:50) + '...' }}
         </h6>
-        <ion-icon name="chevron-down-outline" class="toggle-button" (click)="toggleTitle()"
-          [ngClass]="{ 'expanded': isTitleExpanded }">
+        <ion-icon
+          *ngIf="esNombreLargo(producto?.nombre)"
+          name="chevron-down-outline"
+          class="toggle-button"
+          (click)="toggleTitle()"
+          [ngClass]="{ 'expanded': isTitleExpanded }"
+        >
         </ion-icon>
       </div>
       <p class="product-price">

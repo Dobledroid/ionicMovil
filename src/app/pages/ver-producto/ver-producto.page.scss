@@ -3,8 +3,7 @@
 }
 
 .title-container {
-  display: flex;
-  align-items: center;
+  position: relative;
 }
 
 .product-title {
@@ -15,8 +14,12 @@
 }
 
 .toggle-button {
-  font-size: 1.5rem; /* Tamaño del icono */
+  font-size: 1.5rem;
   cursor: pointer;
+  position: absolute;
+  right: 0; /* ajusta según tu necesidad */
+  top: 50%; /* centra verticalmente */
+  transform: translateY(-50%); /* centra verticalmente */
   transition: transform 0.3s ease;
 }
 

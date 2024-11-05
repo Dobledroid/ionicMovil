@@ -43,7 +43,7 @@ export class HeaderService {
             `${environment.apiUrl}/carrito-compras-total-usuario/${userId}`
           )
           .toPromise();
-
+        console.log("response header ", response)
         if (response) {
           this.setTotalProductosEnCarrito(response.totalProductosEnCarrito);
           this.setTotalPrecio(response.totalPrecio);

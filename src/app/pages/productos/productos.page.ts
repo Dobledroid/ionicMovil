@@ -40,8 +40,8 @@ export class ProductosPage implements OnInit {
   }
 
   getProductosPorCategoria(categoriaId: string) {
-    // const apiUrl = `${environment.apiUrl}/list-products-by-category-ionic/${categoriaId}`;
-    const apiUrl = `http://localhost:4000/api/list-products-by-category-ionic/${categoriaId}`;
+    const apiUrl = `${environment.apiUrl}/list-products-by-category-ionic/${categoriaId}`;
+    // const apiUrl = `http://localhost:4000/api/list-products-by-category-ionic/${categoriaId}`;
     this.http.get<any[]>(apiUrl).subscribe(
       (response) => {
         console.log('Productos de la categoría:', response);

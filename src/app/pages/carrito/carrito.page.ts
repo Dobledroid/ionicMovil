@@ -9,6 +9,8 @@ import { remove, add, trash }  from 'ionicons/icons';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 import { AlertController } from '@ionic/angular/standalone';
 import { HeaderService } from 'src/app/services/header.service';
+import { ChangeDetectorRef } from '@angular/core';
+
 
 @Component({
   selector: 'app-carrito',
@@ -26,7 +28,8 @@ export class CarritoPage implements OnInit {
   constructor(private http: HttpClient, private sessionService: SessionService,
     private navCtrl: NavController,  private alertController: AlertController, 
     private toastController: ToastController,
-    private headerService: HeaderService
+    private headerService: HeaderService,
+    private cdr: ChangeDetectorRef
   ) {
     addIcons({remove, add, trash });
   }
@@ -43,6 +46,7 @@ export class CarritoPage implements OnInit {
   }
 
   ionViewWillEnter() {
+    this.isLoading = true;
     if (this.usuario) {
       this.cargarCarrito(this.usuario.ID_usuario);
     }
@@ -52,14 +56,17 @@ export class CarritoPage implements OnInit {
     const apiUrl = `${environment.apiUrl}/carrito-compras-ID-usuario/${ID_usuario}`;
     this.http.get<any[]>(apiUrl).subscribe(
       (response) => {
+        console.log("response cargar carrito ", response)
         this.carritoProductos = response;
         this.validarExistencias(); 
-        // console.log('Productos del carrito:', this.carritoProductos);
+        console.log('Productos cargados del carrito:', this.carritoProductos);
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
       (error) => {
         console.error('Error al obtener los productos del carrito:', error);
         this.isLoading = false;
+        this.cdr.detectChanges(); 
       }
     );
   }
@@ -70,6 +77,7 @@ export class CarritoPage implements OnInit {
       const apiUrl = `${environment.apiUrl}/products-existencias/${producto.ID_producto}`;
       this.http.get<any>(apiUrl).subscribe(
         (response) => {
+          
           const { existencias } = response;
 
           if (producto.cantidad > existencias) {
@@ -79,8 +87,10 @@ export class CarritoPage implements OnInit {
             this.mostrarToast(`El producto "${producto.nombre}" no tiene suficiente stock. Existencias disponibles: ${existencias}.`, 'danger');
 
             producto.cantidad = existencias;
+            console.log("no se puede por falta de existencias")
           } else {
             producto.sinStock = false;
+            console.log("sin stock = false")
           }
         },
         (error) => {
@@ -165,7 +175,6 @@ export class CarritoPage implements OnInit {
     const apiUrl = `${environment.apiUrl}/carrito-compras/${ID_carrito}`;
     try {
       const response: any = await this.http.delete(apiUrl, { observe: 'response' }).toPromise(); 
-
       if (response.status === 204) { 
         this.cargarCarrito(this.usuario.ID_usuario);
         await this.headerService.fetchTotalProductosEnCarrito();
@@ -188,5 +197,13 @@ export class CarritoPage implements OnInit {
     });
     await toast.present();
   }
+
+  ionViewDidEnter() {
+    this.isLoading = true;
+    if (this.usuario) {
+      this.cargarCarrito(this.usuario.ID_usuario);
+    }
+  }
+  
 
 }
