@@ -44,11 +44,13 @@ export class CuentaPage implements OnInit {
 
  async ngOnInit() {
     const userData = await this.sessionService.get('user');
-    // console.log(userData)
+    console.log(userData)
     if (userData && userData.correoElectronico) {
       this.ID_usuario = userData.ID_usuario;
       this.nombreUsuario = userData.correoElectronico;
       this.obtenerImagenUsuario();
+    }else{
+      this.isLoading = false;
     }
   }
 
