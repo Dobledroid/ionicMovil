@@ -9,8 +9,7 @@ describe('OptionsPopoverComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ OptionsPopoverComponent ],
-      imports: [IonicModule.forRoot()]
+      imports: [IonicModule.forRoot(), OptionsPopoverComponent] // Mueve OptionsPopoverComponent a imports
     }).compileComponents();
 
     fixture = TestBed.createComponent(OptionsPopoverComponent);

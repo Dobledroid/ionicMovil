@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { IonicModule } from '@ionic/angular';
-
 import { EncuestaComponent } from './encuesta.component';
+import { Storage } from '@ionic/storage-angular';
 
 describe('EncuestaComponent', () => {
   let component: EncuestaComponent;
@@ -9,8 +9,10 @@ describe('EncuestaComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ EncuestaComponent ],
-      imports: [IonicModule.forRoot()]
+      imports: [IonicModule.forRoot(), EncuestaComponent], // Asegura que el componente esté en imports
+      providers: [
+        { provide: Storage, useValue: {} } // Mock de Storage si el componente lo requiere
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(EncuestaComponent);

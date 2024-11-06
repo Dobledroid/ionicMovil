@@ -9,8 +9,7 @@ describe('StarRatingComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ StarRatingComponent ],
-      imports: [IonicModule.forRoot()]
+      imports: [IonicModule.forRoot(), StarRatingComponent] // Mueve StarRatingComponent a imports
     }).compileComponents();
 
     fixture = TestBed.createComponent(StarRatingComponent);
