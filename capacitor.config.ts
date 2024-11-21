@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'sportApp',
+  appId: 'com.sportgymcenter.app',
+  appName: 'Sport Gym Center',
   webDir: 'www'
 };
 

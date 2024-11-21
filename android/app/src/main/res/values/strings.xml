@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">sportApp</string>
-    <string name="title_activity_main">sportApp</string>
-    <string name="package_name">io.ionic.starter</string>
-    <string name="custom_url_scheme">io.ionic.starter</string>
+    <string name="app_name">Sport Gym Center</string>
+    <string name="title_activity_main">Sport Gym Center</string>
+    <string name="package_name">com.sportgymcenter.app</string>
+    <string name="custom_url_scheme">com.sportgymcenter.app</string>
 </resources>
