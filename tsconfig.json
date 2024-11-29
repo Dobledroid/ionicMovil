@@ -1,4 +1,3 @@
-/* To learn more about this file see: https://angular.io/config/tsconfig. */
 {
   "compileOnSave": false,
   "compilerOptions": {
@@ -21,12 +20,17 @@
     "lib": ["es2018", "dom"],
     "useDefineForClassFields": false,
     "allowSyntheticDefaultImports": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["cypress",  "mocha"]  // Asegúrate de incluir Cypress en los tipos
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
-  }
+  },
+  "include": [
+    "src/**/*.ts",           // Mantén las rutas necesarias para tu proyecto
+    "cypress/**/*.ts"        // Agrega esta línea para incluir los archivos de prueba de Cypress
+  ]
 }

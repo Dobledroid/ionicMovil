@@ -9,6 +9,7 @@ module.exports = defineConfig({
     defaultCommandTimeout: 300000,
     pageLoadTimeout: 300000,
     video: false,
-    supportFile: false
+    supportFile: false,
+    baseUrl: "http://localhost:8100", 
   },
 });

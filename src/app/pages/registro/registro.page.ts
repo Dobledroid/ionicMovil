@@ -34,6 +34,8 @@ export class RegistroPage implements OnInit {
 
   errores: any = {};
 
+  isSubmitting = false;
+
   constructor(private http: HttpClient, private toastController: ToastController, private navCtrl: NavController) {
     addIcons({ eyeOutline, eyeOffOutline });
   }
@@ -91,10 +93,10 @@ export class RegistroPage implements OnInit {
 
 
   async registrarUsuario() {
-    if (!this.validarFormulario()) {
+    if (!this.validarFormulario() || this.isSubmitting) {
       return;
     }
-
+  this.isSubmitting = true;
     const apiUrl = `${environment.apiUrl}/users/`;
     const body = {
       nombre: this.nombre,

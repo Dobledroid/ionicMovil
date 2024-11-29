@@ -64,7 +64,7 @@
       <div *ngIf="errores.aceptaTerminos" class="error-message">{{ errores.aceptaTerminos }}</div>
 
       <!-- Botón para Crear Cuenta -->
-      <ion-button expand="full" color="dark" (click)="registrarUsuario()" [disabled]="!registroForm.valid">
+      <ion-button type="submit" expand="full" color="dark" (click)="registrarUsuario()" [disabled]="!registroForm.valid">
         Crear Cuenta
       </ion-button>
     </form>
