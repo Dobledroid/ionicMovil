@@ -1,0 +1,135 @@
+name: MOVIL WORKFLOW
+# Disparadores para el workflow
+on:
+  push:
+    branches:
+      - "*" # Ejecutar las pruebas en cualquier rama en cada push
+  pull_request:
+    branches:
+      - main # Ejecutar las pruebas antes de fusionar a master
+
+  workflow_dispatch:
+
+# Permisos para GitHub Actions
+permissions:
+  contents: read
+
+jobs:
+  Pruebas:
+    #name: Run Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout del repositorio
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. Configurar Node.js (para Angular y Jest)
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20" # Versión de Node.js recomendada
+          cache: "npm" # Configura el caché para npm automáticamente
+
+      # 3. Instalar dependencias del proyecto
+      - name: Install dependencies
+        run: npm ci
+
+      # Instalar Ionic CLI globalmente
+      - name: Install Ionic CLI
+        run: npm install -g @ionic/cli
+
+        # 4. Levantar la aplicación de Angular
+      - name: Start Angular App
+        run: npx ionic serve --port 8100 &
+        env:
+          CI: true
+
+      # # 5. Esperar a que el servidor esté arriba
+      #- name: Wait for Angular App to be available
+      #run: npx wait-on http://localhost:8100
+
+      # # 6. Ejecutar pruebas unitarias con Jest
+      # - name: Run Jest tests
+      #   run: npm run test --no-watch --no-progress --browsers=ChromeHeadless
+
+      # # 7. Ejecutar pruebas lint
+      # - name: Run lint
+      #   run: npm run lint
+
+      # 8. Ejecutar pruebas e2e con cypress
+      - name: e2e cypress
+        run: npx cypress run
+
+      - name: Run Karma tests
+        run: npm test
+
+  BuildAndroid:
+          runs-on: ubuntu-latest
+          needs: Pruebas # Este job se ejecutará solo si 'Pruebas' pasa exitosamente
+
+          steps:
+            # 1. Checkout del repositorio
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            # 2. Configurar Node.js
+            - name: Set up Node.js
+              uses: actions/setup-node@v3
+              with:
+                node-version: "20" # Versión de Node.js recomendada
+                cache: "npm"
+
+            # 3. Instalar dependencias del proyecto
+            - name: Install dependencies
+              run: npm ci
+
+            # 4. Instalar Ionic CLI globalmente
+            - name: Install Ionic CLI
+              run: npm install -g @ionic/cli
+
+            # 5. Construir la aplicación con Ionic
+            - name: Build Ionic App
+              run: ionic build
+
+            # 6. Sincronizar Capacitor
+            - name: Synchronize Capacitor
+              run: npx cap sync android
+
+            # 7. Verificar carpeta de Android
+            - name: Check Android Folder
+              run: ls android/
+
+              # . Configurar Java y Android SDK
+            - name: Set up JDK
+              uses: actions/setup-java@v3
+              with:
+                java-version: '17'
+                distribution: 'zulu'
+          
+            # 9. Configurar el entorno para Android SDK
+            - name: Set up Android SDK
+              uses: android-actions/setup-android@v2
+              with:
+                api-level: 33
+                target: android-33
+                build-tools: 33.0.2
+
+            # 10. Otorgar permisos de ejecución a gradlew
+            - name: Give gradlew execute permissions
+              run: |
+                cd android
+                chmod +x gradlew
+
+            # 11. Construir el .aab
+            - name: Build Android App Bundle (.aab)
+              run: |
+                cd android
+                ./gradlew bundleRelease
+
+            # 12. Cargar artefactos (opcional)
+            - name: Upload .aab artifact
+              uses: actions/upload-artifact@v3
+              with:
+                name: app-release.aab
+                path: android/app/build/outputs/bundle/release/app-release.aab
