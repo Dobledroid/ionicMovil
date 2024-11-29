@@ -31,6 +31,8 @@ export class AgregardireccionPage implements OnInit {
   predeterminado: boolean = true;
   isLoading = false;
 
+  direcciones: any[] = [];
+
   constructor(
     private toastController: ToastController,
     private navCtrl: NavController,

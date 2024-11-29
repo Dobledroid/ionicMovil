@@ -73,8 +73,13 @@
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
+    "karma-edge-launcher": "^0.4.2",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "karma-mocha": "^2.0.1",
+    "karma-opera-launcher": "^1.0.0",
+    "karma-webpack": "^5.0.1",
+    "ts-loader": "^9.5.1",
     "typescript": "~5.4.0"
   },
   "description": "An Ionic project"
