@@ -45,8 +45,9 @@ describe('Registro - Registro de usuario', () => {
     // Hacer clic en el botón de "Crear Cuenta"
     cy.get('ion-button[type="submit"]').click();
 
-    // Verificar que redirige al usuario a la página de inicio de sesión
-    cy.url({ timeout: 10000 }).should('include', '/iniciar-sesion');
+    cy.wait(2000); // Espera adicional si es necesario
+    cy.url().should('include', '/iniciar-sesion');
+
   });
 
 });
