@@ -1,18 +1,15 @@
 module.exports = {
-  testEnvironment: 'jsdom', // Asegúrate de que Jest use jsdom
-  setupFilesAfterEnv: ['<rootDir>/src/setupTests.js'],
-
+  preset: 'jest-preset-angular',
+  setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   transform: {
-    '^.+\\.[jt]sx?$': 'babel-jest',   // Transpila archivos .js, .jsx, .ts y .tsx con Babel
+    '^.+\\.(ts|mjs|html|js)$': 'ts-jest',  // Asegúrate de que los archivos .ts, .mjs, .html y .js sean procesados correctamente
+  },
+  globals: {
+    'ts-jest': {
+      tsconfig: '<rootDir>/tsconfig.spec.json',  // Asegúrate de que esté apuntando a tu tsconfig.spec.json
+    },
   },
   moduleNameMapper: {
-    '\\.(css|less|sass|scss)$': 'identity-obj-proxy',
-    "\\.(jpg|jpeg|png|gif|svg)$": "<rootDir>/__mocks__/fileMock.js",
-    'react-leaflet': '<rootDir>/__mocks__/react-leaflet.js',
-    "^firebase/messaging$": "<rootDir>/__mocks__/firebase/messaging.js"
-
+    '^src/(.*)$': '<rootDir>/src/$1',  // Mapea los módulos correctamente
   },
-  transformIgnorePatterns: [
-    "/node_modules/(?!(react-leaflet|@react-leaflet/core|@babel/runtime)/)",
-  ]
 };

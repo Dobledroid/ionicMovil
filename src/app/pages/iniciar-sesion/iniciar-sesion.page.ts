@@ -6,15 +6,13 @@ import { AlertController, IonicModule } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { mail, lockClosed, eye, eyeOff } from 'ionicons/icons';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-
 import { Router, RouterModule } from '@angular/router';
-
-import { Storage } from '@ionic/storage-angular';
-
 import { SessionService } from '../../services/session.service';
 import { IonRouterLink } from '@ionic/angular/standalone';
-
+import { ChangeDetectorRef } from '@angular/core';
+import { NgZone } from '@angular/core';
 import { environment } from '../../../environments/environment';
+
 
 interface LoginResponse {
   success: boolean;
@@ -39,9 +37,13 @@ export class IniciarSesionPage implements OnInit {
   passwordIcon: string = 'eye'; // Icono inicial para mostrar/ocultar la contraseña
   passwordIconColor: string = 'medium'; // Color inicial del icono
 
+  isLoggingIn = false;
+
   constructor(private http: HttpClient, private alertController: AlertController, 
     private router: Router,
-    private sessionService: SessionService
+    private sessionService: SessionService,
+    private cdr: ChangeDetectorRef,
+    private zone: NgZone
   ) {
     addIcons({ mail, lockClosed, eye, eyeOff });
   }
@@ -68,16 +70,20 @@ export class IniciarSesionPage implements OnInit {
   
       try {
         const response = await this.http.post<LoginResponse>(`${this.apiUrl}/users/login`, body).toPromise();
-        console.log('Respuesta del servidor:', response);
+        // console.log('Respuesta del servidor:', response);
   
         if (response) {
           // Intentar guardar los datos de sesión
           try {
+            this.isLoggingIn = true;
+            this.cdr.detectChanges(); 
+            
             await this.sessionService.set('user', response);
-            console.log('Datos de sesión guardados correctamente.');
+            // console.log('Datos de sesión guardados correctamente.');
   
             // Redirigir a la vista de inicio
-            window.location.href = '/inicio';
+            // window.location.href = '/inicio';
+            this.router.navigate(['/inicio']);
           } catch (error) {
             console.error('Error al guardar los datos de sesión:', error);
             const alert = await this.alertController.create({

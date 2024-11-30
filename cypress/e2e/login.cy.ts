@@ -1,29 +1,29 @@
 describe('Iniciar Sesión - Login Flow', () => {
   // Caso de prueba 1: Inicio de sesión exitoso con credenciales válidas
-  // it('should allow a user to log in with valid credentials', () => {
-  //   // Log para verificar la visita a la página
-  //   cy.log('Visiting the login page');
-  //   cy.visit('/iniciar-sesion');
-  //   cy.wait(2000);
-  //   // Log para verificar la entrada de correo
-  //   cy.log('Entering email');
-  //   cy.get('input[name="email"]').type('carlosexequiel360@gmail.com');
+  it('should allow a user to log in with valid credentials', () => {
+    // Log para verificar la visita a la página
+    cy.log('Visiting the login page');
+    cy.visit('/iniciar-sesion');
+    cy.wait(2000);
+    // Log para verificar la entrada de correo
+    cy.log('Entering email');
+    cy.get('input[name="email"]').type('carlosexequiel360@gmail.com');
 
-  //   // Log para verificar la entrada de contraseña
-  //   cy.log('Entering password');
-  //   cy.get('input[name="password"]').type('carlosexequiel360@gmail.coM');
+    // Log para verificar la entrada de contraseña
+    cy.log('Entering password');
+    cy.get('input[name="password"]').type('carlosexequiel360@gmail.coM');
 
-  //   // Esperar a que el botón de submit esté habilitado
-  //   cy.get('ion-button[type="submit"]').should('not.be.disabled');
+    // Esperar a que el botón de submit esté habilitado
+    cy.get('ion-button[type="submit"]').should('not.be.disabled');
 
-  //   // Log para hacer clic en el botón de iniciar sesión
-  //   cy.log('Clicking the submit button');
-  //   cy.get('ion-button[type="submit"]').click();
+    // Log para hacer clic en el botón de iniciar sesión
+    cy.log('Clicking the submit button');
+    cy.get('ion-button[type="submit"]').click();
 
-  //   // Verificar que la URL haya cambiado y el inicio haya sido exitoso
-  //   cy.url().should('include', '/inicio');
-  //   cy.log('Login successful, URL includes /inicio');
-  // });
+    // Verificar que la URL haya cambiado y el inicio haya sido exitoso
+    cy.url().should('include', '/inicio');
+    cy.log('Login successful, URL includes /inicio');
+  });
 
 // Caso de prueba 2: Error al iniciar sesión con credenciales incorrectas
 it('should show an error message for invalid credentials', () => {

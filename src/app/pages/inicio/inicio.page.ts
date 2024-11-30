@@ -33,6 +33,8 @@ export class InicioPage implements OnInit {
   isLoading: boolean = true;
   currency: string = 'MXN'; 
 
+  private componentActive = true; 
+
   categorias = [
     { ID_categoria: 1, nombre: 'Suplementos', imagenUrl: 'assets/img/categorias/vitaminas.png' },
     { ID_categoria: 2, nombre: 'Equipo de entrenamiento', imagenUrl: 'assets/img/categorias/pesa.png' },
@@ -61,18 +63,22 @@ export class InicioPage implements OnInit {
 
   }
 
+  ngOnDestroy() {
+    this.componentActive = false;  // Marcar como inactivo al destruir el componente
+  }
 
   async obtenerUbicacionUsuario() {
     try {
       const response: any = await this.http.get('http://ip-api.com/json').toPromise();
       // console.log('Ubicación del usuario:', response);
 
-      if (response && response.countryCode) {
-        // Cambiar moneda según país detectado
+      if (this.componentActive && response && response.countryCode) {  // Solo realizar si el componente está activo
         this.currency = response.countryCode === 'MX' ? 'MXN' : 'USD';
       }
     } catch (error) {
-      console.error('Error al obtener la ubicación del usuario:', error);
+      if (this.componentActive) {  // Solo realizar si el componente está activo
+        console.error('Error al obtener la ubicación del usuario:', error);
+      }
     }
   }
 
@@ -87,6 +93,7 @@ export class InicioPage implements OnInit {
 
     this.http.get<any[]>(apiUrl).subscribe(
       async (response) => {
+        if (!this.componentActive) return;
         // console.log('Lista de productos:', response);
         // console.log(this.currency)
         for (const producto of response) {
@@ -99,12 +106,14 @@ export class InicioPage implements OnInit {
         }
         this.productos = response;
         this.productosFiltrados = [...this.productos];
-        // console.log(this.productosFiltrados)
+        console.log("prueba karma", this.productosFiltrados)
         this.isLoading = false;
       },
       (error) => {
-        console.error('Error al obtener los productos:', error); 
-        this.isLoading = false; 
+        if (this.componentActive) {  // Solo realizar si el componente está activo
+          console.error('Error al obtener los productos:', error);
+          this.isLoading = false; 
+        }
       }
     );
   }

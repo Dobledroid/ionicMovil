@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IonContent, IonHeader, IonRouterLink, IonTitle, IonToolbar, NavController } from '@ionic/angular/standalone';
 import { RouterModule } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { IonicModule, ToastController } from '@ionic/angular';
 import { environment } from 'src/environments/environment';
 
@@ -19,8 +19,8 @@ export class RecuperacionPage implements OnInit {
 
   correoElectronico: string = '';
   isEmailValid: boolean = false;
-
-  constructor(private toastController: ToastController, private navCtrl: NavController) {}
+  isEmailExists: boolean = false;
+  constructor(private http: HttpClient, private toastController: ToastController, private navCtrl: NavController) {}
 
   ngOnInit() {}
 
@@ -33,62 +33,36 @@ export class RecuperacionPage implements OnInit {
     const apiUrl = `${environment.apiUrl}/users/email/${encodeURIComponent(this.correoElectronico)}`;
     
     try {
-      const response = await fetch(apiUrl);
-  
-      if (response.ok) {
-        const userData = await response.json();
-  
-        // Ahora realiza la segunda solicitud para enviar el correo
+      // Realiza la solicitud para verificar el correo electrónico
+      const response = await this.http.get<any>(apiUrl).toPromise();
+
+      if (response) {
+        this.isEmailExists = true;
+        
+        // Realiza la segunda solicitud para enviar el correo
         const sendEmailApiUrl = `${environment.apiUrl}/sendMethod`;
-        const emailResponse = await fetch(sendEmailApiUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            method: "1",
-            email: userData.correoElectronico,
-          }),
-        });
-  
-        const emailData = await emailResponse.json();
-  
-        if (!emailResponse.ok) {
-          this.mostrarToast(emailData.msg || 'Error al enviar el código de verificación', 'danger');
+        const emailResponse = await this.http.post<any>(sendEmailApiUrl, {
+          method: "1",
+          email: response.correoElectronico,
+        }).toPromise();
+
+// console.log("emailResponse, ", emailResponse)
+        if (!emailResponse) {
+          this.mostrarToast(emailResponse.msg || 'Error al enviar el código de verificación', 'danger');
           return;
         } else {
           this.mostrarToast('Correo enviado con su código', 'success');
-          this.navigateToValidacion(userData);
+          this.navigateToValidacion(response);
         }
       } else {
-        let errorMessage = '';
-  
-        switch (response.status) {
-          case 400:
-            errorMessage = 'Solicitud incorrecta. Por favor proporcione el correo electrónico.';
-            break;
-          case 401:
-            errorMessage = 'Usuario no autorizado. Verifica tus credenciales.';
-            break;
-          case 404:
-            errorMessage = 'Usuario no encontrado.';
-            break;
-          case 500:
-            errorMessage = 'Error interno del servidor. Por favor, inténtalo de nuevo más tarde.';
-            break;
-          default:
-            const errorData = await response.json();
-            errorMessage = errorData.msg || 'Error desconocido.';
-        }
-  
-        this.mostrarToast(errorMessage, 'danger');
+        this.mostrarToast('Usuario no encontrado.', 'danger');
       }
     } catch (error) {
       console.error('Error al validar el correo:', error);
       this.mostrarToast('Error de conexión. Por favor, inténtalo de nuevo más tarde.', 'danger');
     }
   }
-  
+
   
   navigateToValidacion(userData: any) {
     // Assuming you want to navigate to a page named 'validacion' and pass user data
