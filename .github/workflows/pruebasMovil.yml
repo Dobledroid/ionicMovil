@@ -134,18 +134,18 @@ jobs:
                 name: app-release.aab
                 path: android/app/build/outputs/bundle/release/app-release.aab
 
-            # 13. Instalar Butler
-            - name: Install Butler
+            # 13. Descargar butler desde Google Drive
+            - name: Download Butler from Google Drive
               run: |
-                curl -L -o butler.zip https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
+                curl -L -o butler.zip "https://drive.google.com/file/d/1vfo3W8gMqq3xeJUNgLiTayerBq6G5OGE/view?usp=drive_link"
                 unzip butler.zip -d ~/butler
                 sudo mv ~/butler/butler /usr/local/bin/
-                butler -V # Verificar que Butler esté instalado correctamente
+                butler -V # Verificar instalación
 
             # 14. Subir el archivo a itch.io
             - name: Deploy to itch.io
               run: |
-                butler push android/app/build/outputs/bundle/release/app-release.aab your-itchio-account/your-project:android
+                butler push android/app/build/outputs/bundle/release/app-release.aab dobdd/sport-gym-center:android
               env:
                 BUTLER_CREDENTIALS: ${{ secrets.BUTLER_API_KEY }}
 
