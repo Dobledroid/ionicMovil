@@ -142,10 +142,11 @@ jobs:
                 sudo mv ~/butler/butler /usr/local/bin/
                 butler -V # Verificar instalación
 
-            # 14. Subir el archivo a itch.io
+            # Subir el archivo a itch.io
             - name: Deploy to itch.io
               run: |
-                butler push android/app/build/outputs/bundle/release/app-release.aab dobdd/sportapp:android
+                butler push android/app/build/outputs/bundle/release/app-release.aab dobdd/sportapp:android --no-version-check
               env:
                 BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+
 
