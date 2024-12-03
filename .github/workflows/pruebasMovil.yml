@@ -145,7 +145,7 @@ jobs:
             # Subir el archivo a itch.io
             - name: Deploy to itch.io
               run: |
-                butler push android/app/build/outputs/bundle/release/app-release.aab dobdd/sportapp:android --no-version-check
+                butler push android/app/build/outputs/bundle/release/app-release.aab dobdd/sportapp:android --dry-run --context-timeout=60
               env:
                 BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
 
