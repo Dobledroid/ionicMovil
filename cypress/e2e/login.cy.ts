@@ -11,7 +11,7 @@ describe('Iniciar Sesión - Login Flow', () => {
 
     // Log para verificar la entrada de contraseña
     cy.log('Entering password');
-    cy.get('input[name="password"]').type('carlosexequiel360@gmail.CCCcoM');
+    cy.get('input[name="password"]').type('carlosexequiel360@gmail.coM');
 
     // Esperar a que el botón de submit esté habilitado
     cy.get('ion-button[type="submit"]').should('not.be.disabled');
@@ -33,7 +33,7 @@ it('should show an error message for invalid credentials', () => {
 
   // Log para verificar la entrada de correo incorrecto
   cy.log('Entering incorrect email');
-  cy.get('input[name="email"]').type('correo@incorrecto.com');
+  cy.get('input[name="email"]').type('correoincorrecto.com');
 
   // Log para verificar la entrada de contraseña incorrecta
   cy.log('Entering incorrect password');
