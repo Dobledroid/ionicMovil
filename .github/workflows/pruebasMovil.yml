@@ -147,5 +147,5 @@ jobs:
               run: |
                 butler push android/app/build/outputs/bundle/release/app-release.aab dobdd/sport-gym-center:android
               env:
-                BUTLER_CREDENTIALS: ${{ secrets.BUTLER_API_KEY }}
+                BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
 
