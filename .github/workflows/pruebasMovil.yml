@@ -137,7 +137,7 @@ jobs:
             # 13. Descargar butler desde Google Drive
             - name: Download Butler from Google Drive
               run: |
-                curl -L -o butler.zip "https://drive.google.com/file/d/1vfo3W8gMqq3xeJUNgLiTayerBq6G5OGE/view?usp=drive_link"
+                curl -L -o butler.zip "https://drive.google.com/uc?export=download&id=1vfo3W8gMqq3xeJUNgLiTayerBq6G5OGE"
                 unzip butler.zip -d ~/butler
                 sudo mv ~/butler/butler /usr/local/bin/
                 butler -V # Verificar instalación
