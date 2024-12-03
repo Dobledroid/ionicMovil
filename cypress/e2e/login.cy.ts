@@ -11,7 +11,7 @@ describe('Iniciar Sesión - Login Flow', () => {
 
     // Log para verificar la entrada de contraseña
     cy.log('Entering password');
-    cy.get('input[name="password"]').type('carlosexequiel360@gmail.coM');
+    cy.get('input[name="password"]').type('carlosexequiel360@gmail.CCCcoM');
 
     // Esperar a que el botón de submit esté habilitado
     cy.get('ion-button[type="submit"]').should('not.be.disabled');
