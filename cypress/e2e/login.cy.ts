@@ -33,7 +33,7 @@ it('should show an error message for invalid credentials', () => {
 
   // Log para verificar la entrada de correo incorrecto
   cy.log('Entering incorrect email');
-  cy.get('input[name="email"]').type('correoincorrecto.com');
+  cy.get('input[name="email"]').type('correo@incorrecto.com');
 
   // Log para verificar la entrada de contraseña incorrecta
   cy.log('Entering incorrect password');
