@@ -133,3 +133,10 @@ jobs:
               with:
                 name: app-release.aab
                 path: android/app/build/outputs/bundle/release/app-release.aab
+
+                # 13. Subir el archivo a itch.io con butler
+            - name: Deploy to itch.io
+              run: |
+                butler push android/app/build/outputs/bundle/release/app-release.aab your-itchio-account/your-project:android
+              env:
+                BUTLER_CREDENTIALS: ${{ secrets.BUTLER_API_KEY }}
